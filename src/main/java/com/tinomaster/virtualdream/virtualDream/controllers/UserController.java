@@ -14,7 +14,6 @@ import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/users")
 public class UserController {
 
