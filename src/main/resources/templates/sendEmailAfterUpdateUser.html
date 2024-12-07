@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aggiornamenti dei dati</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f4f4f4;
+}
+
+.container {
+	max-width: 600px;
+	margin: 20px auto;
+	background: #ffffff;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+.header {
+	background: #4CAF50;
+	color: white;
+	text-align: center;
+	padding: 20px;
+}
+
+.content {
+	padding: 20px;
+	line-height: 1.6;
+	color: #333333;
+}
+
+.content p {
+	margin: 0 0 10px;
+}
+
+.footer {
+	text-align: center;
+	padding: 15px;
+	font-size: 12px;
+	color: #999999;
+	background: #f9f9f9;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<!-- Header del correo -->
+		<div class="header">
+			<h1>Aggiornamenti dei dati</h1>
+		</div>
+		<!-- Contenido del correo -->
+		<div class="content">
+			<p>
+				Ciao <span th:text="${userName}">Utente</span>,
+			</p>
+			<p>Ti informiamo che i tuoi dati personali sono stati aggiornati
+				nel nostro sistema. Di seguito sono riportati i dettagli:</p>
+			<p>Se non riconosci queste modifiche, ti consigliamo di
+				contattare il nostro team di supporto il prima possibile.</p>
+			<p>Grazie per aver fiducia in noi,</p>
+			<p>
+				<strong>Il gruppo dell'Amministrazione</strong>
+			</p>
+		</div>
+		<!-- Footer del correo -->
+		<div class="footer">
+			<p>© 2024 Tu Compañía. Todos los derechos reservados.</p>
+		</div>
+	</div>
+</body>
+</html>
