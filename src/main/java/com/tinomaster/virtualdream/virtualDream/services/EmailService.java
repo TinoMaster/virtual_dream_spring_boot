@@ -11,7 +11,6 @@ import com.tinomaster.virtualdream.virtualDream.entities.User;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class EmailService {

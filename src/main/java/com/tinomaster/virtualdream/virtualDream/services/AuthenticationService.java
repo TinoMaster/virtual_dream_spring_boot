@@ -2,8 +2,6 @@ package com.tinomaster.virtualdream.virtualDream.services;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +17,8 @@ import com.tinomaster.virtualdream.virtualDream.dtos.AuthRegisterDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthResponseDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.EmailDto;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
+import com.tinomaster.virtualdream.virtualDream.enums.ERole;
+import com.tinomaster.virtualdream.virtualDream.exceptions.InvalidRoleException;
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +35,11 @@ public class AuthenticationService {
 	private final EmailService emailService;
 	private final UserRepository userRepository;
 
-	public AuthResponseDto register(AuthRegisterDto registerDto) {
+	public AuthResponseDto registerOwner(AuthRegisterDto registerDto) {
+		if (registerDto.getRole() != ERole.OWNER) {
+			throw new InvalidRoleException("El role proporcionado no es valido para registrar un propietario.");
+		}
+
 		var user = User.builder().name(registerDto.getName()).email(registerDto.getEmail()).active(true)
 				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now())
 				.password(passwordEncoder.encode(registerDto.getPassword())).role(registerDto.getRole()).active(true)

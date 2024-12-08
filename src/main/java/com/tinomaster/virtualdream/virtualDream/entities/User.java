@@ -26,6 +26,8 @@ import com.tinomaster.virtualdream.virtualDream.enums.ERole;
 @NoArgsConstructor
 public class User implements UserDetails {
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
@@ -41,7 +43,7 @@ public class User implements UserDetails {
 	private ERole role;
 	@Column(nullable = false)
 	private boolean active;
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private long businessId;
 	@Column(nullable = false, updatable = false)
 	@CreationTimestamp
