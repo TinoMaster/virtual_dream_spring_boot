@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,8 +44,10 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private long businessId;
 	@Column(nullable = false, updatable = false)
+	@CreationTimestamp
 	private LocalDateTime createdAt;
 	@Column(nullable = false)
+	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 
 	@Override

@@ -14,11 +14,15 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
 	private final JavaMailSender javaMailSender;
 	private final TemplateEngine templateEngine;
+
+	public EmailService(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+		this.javaMailSender = javaMailSender;
+		this.templateEngine = templateEngine;
+	}
 
 	public void sendEmailAfterUpdateUser(EmailDto emailDto, User user) throws MessagingException {
 		MimeMessage message = javaMailSender.createMimeMessage();

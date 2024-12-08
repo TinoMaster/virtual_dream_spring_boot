@@ -14,7 +14,7 @@ import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1")
 public class UserController {
 
 	private final UserService userService;
@@ -28,13 +28,13 @@ public class UserController {
 		return mapper.map(userDto, User.class);
 	}
 
-	@GetMapping
+	@GetMapping("/superadmin/users")
 	public List<UserDto> getAllUsers() {
 		var usersList = StreamSupport.stream(userService.getAllUsers().spliterator(), false).toList();
 		return usersList.stream().map(this::userToUserDto).collect(Collectors.toList());
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/private/{id}")
 	public UserDto getUserById(Long id) {
 		return userToUserDto(userService.getUserById(id));
 	}

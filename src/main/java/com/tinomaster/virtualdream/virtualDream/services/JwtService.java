@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,14 @@ public class JwtService {
 	}
 
 	private String buildToken(Map<String, Object> extractClaims, UserDetails userDetails, long expiration) {
+		var authorities = userDetails.getAuthorities();
+
+		// Convertir las autoridades en una lista de cadenas (roles)
+		var roles = authorities.stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
+
+		// Agregar los roles al mapa de claims
+		extractClaims.put("authorities", roles);
+
 		return Jwts.builder().setClaims(extractClaims).setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + expiration))

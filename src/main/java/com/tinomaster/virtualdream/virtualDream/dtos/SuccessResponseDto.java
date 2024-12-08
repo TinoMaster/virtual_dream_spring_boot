@@ -6,14 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserDto {
-	private long id;
-	private String name;
-	private String email;
-	private String role;
-	private boolean active;
-	private long businessId;
+public class SuccessResponseDto {
+	private String httpCode;
+	private boolean success;
+	private String message;
 }
