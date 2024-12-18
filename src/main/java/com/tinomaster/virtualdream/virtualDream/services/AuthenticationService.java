@@ -2,6 +2,7 @@ package com.tinomaster.virtualdream.virtualDream.services;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,7 @@ import com.tinomaster.virtualdream.virtualDream.entities.Business;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
 import com.tinomaster.virtualdream.virtualDream.enums.ERole;
 import com.tinomaster.virtualdream.virtualDream.exceptions.InvalidRoleException;
+import com.tinomaster.virtualdream.virtualDream.repositories.AddressRepository;
 import com.tinomaster.virtualdream.virtualDream.repositories.BusinessRepository;
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
@@ -42,59 +44,98 @@ public class AuthenticationService {
 	private final EmailService emailService;
 	private final UserRepository userRepository;
 	private final BusinessRepository businessRepository;
+	private final AddressRepository addressRepository;
 
 	@Transactional
 	public AuthResponseDto registerOwner(AuthRegisterDto registerDto) {
-		if (registerDto.getRole() != ERole.OWNER) {
-			throw new InvalidRoleException("El rol proporcionado no es válido para registrar un propietario.");
-		}
+	    System.out.println(registerDto);
 
-		BusinessDto businessDto = registerDto.getBusiness();
-		if (businessDto == null) {
-			throw new IllegalArgumentException("Se requiere el negocio para registrar un propietario");
-		}
-		
-		AddressDto addressToSave = registerDto.getBusiness().getAddress();
+	    if (registerDto.getRole() != ERole.OWNER) {
+	        throw new InvalidRoleException("El rol proporcionado no es válido para registrar un propietario.");
+	    }
 
-		Business newBusiness = Business.builder()
-				.name(businessDto.getName())
-				.email(businessDto.getEmail())
-				.phone(businessDto.getPhone())
-				.description(businessDto.getDescription())
-				.address(Address.builder()
-						.street(addressToSave.getStreet())
-						.number(addressToSave.getNumber())
-						.city(addressToSave.getCity())
-						.zip(addressToSave.getZip())
-						.build())
-				.createdAt(LocalDateTime.now())
-				.updatedAt(LocalDateTime.now())
-				.build();
+	    BusinessDto businessDto = registerDto.getBusiness();
+	    if (businessDto == null) {
+	        throw new IllegalArgumentException("Se requiere el negocio para registrar un propietario.");
+	    }
 
-		Business saveBusiness = businessRepository.save(newBusiness);
+	    // Guardar la dirección
+	    Address addressToSave = Address.builder()
+	            .street(businessDto.getAddress().getStreet())
+	            .number(businessDto.getAddress().getNumber())
+	            .city(businessDto.getAddress().getCity())
+	            .zip(businessDto.getAddress().getZip())
+	            .build();
+	    Address savedAddress = addressRepository.save(addressToSave);
 
-		User user = User.builder().name(registerDto.getName()).email(registerDto.getEmail())
-				.password(passwordEncoder.encode(registerDto.getPassword())).role(registerDto.getRole()).active(true)
-				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).businesses(List.of(saveBusiness))
-				.build();
+	    if (savedAddress == null) {
+	        throw new IllegalStateException("Error al guardar la dirección.");
+	    }
 
-		User registeredUser = userRepository.save(user);
+	    // Guardar el usuario primero
+	    User user = User.builder()
+	            .name(registerDto.getName())
+	            .email(registerDto.getEmail())
+	            .password(passwordEncoder.encode(registerDto.getPassword()))
+	            .role(registerDto.getRole())
+	            .active(false)
+	            .createdAt(LocalDateTime.now())
+	            .updatedAt(LocalDateTime.now())
+	            .build();
+	    User registeredUser = userRepository.save(user);
 
-		String token = jwtService.generateToken(registeredUser);
-		String refreshToken = jwtService.generateRefreshToken(registeredUser);
+	    if (registeredUser == null) {
+	        throw new IllegalStateException("Error al guardar el usuario.");
+	    }
 
-		try {
-			EmailDto emailDto = new EmailDto();
-			emailDto.setDestination(registeredUser.getEmail());
-			emailDto.setSubject("¡Te damos la Bienvenida a nuestra aplicación!");
-			emailDto.setMessage("Gentil Usuario " + user.getName() + ", le informamos que ....");
+	    // Guardar el negocio con el usuario como propietario
+	    Business newBusiness = Business.builder()
+	            .name(businessDto.getName())
+	            .email(businessDto.getEmail())
+	            .phone(businessDto.getPhone())
+	            .description(businessDto.getDescription())
+	            .address(savedAddress) // Asigna la dirección guardada
+	            .owner(registeredUser) // Asigna el usuario como propietario
+	            .createdAt(LocalDateTime.now())
+	            .updatedAt(LocalDateTime.now())
+	            .build();
+	    Business savedBusiness = businessRepository.save(newBusiness);
 
-			emailService.sendEmailAfterRegisterUser(emailDto, registeredUser);
-		} catch (Exception e) {
-			System.err.println("Ha ocurrido un error mientras se enviaba el correo de registro: " + e.getMessage());
-		}
-		return AuthResponseDto.builder().token(token).refreshToken(refreshToken).role(registeredUser.getRole()).build();
+	    if (savedBusiness == null) {
+	        throw new IllegalStateException("Error al guardar el negocio.");
+	    }
+	    
+
+	    // Actualizar el usuario con el negocio guardado
+	    List<Business> businesses = new ArrayList<>();
+	    businesses.add(savedBusiness);
+	    registeredUser.setBusinesses(businesses);
+	    userRepository.save(registeredUser);
+
+	    // Generar los tokens
+	    String token = jwtService.generateToken(registeredUser);
+	    String refreshToken = jwtService.generateRefreshToken(registeredUser);
+
+	    // Enviar correo
+	    try {
+	        EmailDto emailDto = new EmailDto();
+	        emailDto.setDestination(registeredUser.getEmail());
+	        emailDto.setSubject("¡Te damos la Bienvenida a nuestra aplicación!");
+	        emailDto.setMessage("Gentil Usuario " + user.getName() + ", le informamos que ....");
+
+	        emailService.sendEmailAfterRegisterUser(emailDto, registeredUser);
+	    } catch (Exception e) {
+	        System.err.println("Ha ocurrido un error mientras se enviaba el correo de registro: " + e.getMessage());
+	    }
+
+	    return AuthResponseDto.builder()
+	            .token(token)
+	            .refreshToken(refreshToken)
+	            .role(registeredUser.getRole())
+	            .build();
 	}
+
+
 
 	public AuthResponseDto authenticate(AuthLoginDto authRequestDto) {
 		authenticationManager.authenticate(
