@@ -1,7 +1,5 @@
 package com.tinomaster.virtualdream.virtualDream.dtos;
 
-import com.tinomaster.virtualdream.virtualDream.enums.ERole;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthRegisterDto {
-	private String name;
-	private String email;
-	private String password;
-	private ERole role;
-	private BusinessDto business;
+public class AddressDto {
+	private Long id;
+	private String street;
+	private String number;
+	private String city;
+	private String zip;
 }

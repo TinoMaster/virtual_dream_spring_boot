@@ -10,7 +10,6 @@ public class VirtualdreamApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(VirtualdreamApplication.class, args);
-
 	}
 
 }

@@ -1,20 +1,19 @@
-package com.tinomaster.virtualdream.virtualDream.dtos;
+package com.tinomaster.virtualdream.virtualDream.dtos.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class BusinessDto {
-	private Long id;
+public class BusinessResponseDto {
+	private long id;
 	private String name;
 	private String email;
-	private String description;
 	private String phone;
-	private AddressDto address;
+	private String description;
+	private String address;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }

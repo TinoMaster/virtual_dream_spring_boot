@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tinomaster.virtualdream.virtualDream.enums.ERole;
 
 @Entity
@@ -35,19 +36,27 @@ public class User implements UserDetails {
 
 	@Column(nullable = false)
 	private String name;
+
 	@Column(nullable = false, unique = true)
 	private String email;
+
 	@Column(nullable = false)
 	private String password;
+
 	@Enumerated(EnumType.STRING)
 	private ERole role;
+
 	@Column(nullable = false)
 	private boolean active;
-	@Column(nullable = true)
-	private long businessId;
+
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<Business> businesses;
+
 	@Column(nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+
 	@Column(nullable = false)
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
@@ -93,4 +102,8 @@ public class User implements UserDetails {
 		// TODO Auto-generated method stub
 		return password;
 	}
+
+	public boolean isOwnerWithAProject() {
+        return this.getRole() == ERole.OWNER && this.getBusinesses().isEmpty();
+    }
 }

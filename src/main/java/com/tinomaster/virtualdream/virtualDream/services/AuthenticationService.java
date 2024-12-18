@@ -2,6 +2,7 @@ package com.tinomaster.virtualdream.virtualDream.services;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,17 +13,23 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinomaster.virtualdream.virtualDream.dtos.AddressDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthLoginDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthRegisterDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthResponseDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.BusinessDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.EmailDto;
+import com.tinomaster.virtualdream.virtualDream.entities.Address;
+import com.tinomaster.virtualdream.virtualDream.entities.Business;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
 import com.tinomaster.virtualdream.virtualDream.enums.ERole;
 import com.tinomaster.virtualdream.virtualDream.exceptions.InvalidRoleException;
+import com.tinomaster.virtualdream.virtualDream.repositories.BusinessRepository;
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,16 +41,42 @@ public class AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final EmailService emailService;
 	private final UserRepository userRepository;
+	private final BusinessRepository businessRepository;
 
+	@Transactional
 	public AuthResponseDto registerOwner(AuthRegisterDto registerDto) {
 		if (registerDto.getRole() != ERole.OWNER) {
-			throw new InvalidRoleException("El role proporcionado no es valido para registrar un propietario.");
+			throw new InvalidRoleException("El rol proporcionado no es válido para registrar un propietario.");
 		}
 
-		var user = User.builder().name(registerDto.getName()).email(registerDto.getEmail()).active(true)
-				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now())
+		BusinessDto businessDto = registerDto.getBusiness();
+		if (businessDto == null) {
+			throw new IllegalArgumentException("Se requiere el negocio para registrar un propietario");
+		}
+		
+		AddressDto addressToSave = registerDto.getBusiness().getAddress();
+
+		Business newBusiness = Business.builder()
+				.name(businessDto.getName())
+				.email(businessDto.getEmail())
+				.phone(businessDto.getPhone())
+				.description(businessDto.getDescription())
+				.address(Address.builder()
+						.street(addressToSave.getStreet())
+						.number(addressToSave.getNumber())
+						.city(addressToSave.getCity())
+						.zip(addressToSave.getZip())
+						.build())
+				.createdAt(LocalDateTime.now())
+				.updatedAt(LocalDateTime.now())
+				.build();
+
+		Business saveBusiness = businessRepository.save(newBusiness);
+
+		User user = User.builder().name(registerDto.getName()).email(registerDto.getEmail())
 				.password(passwordEncoder.encode(registerDto.getPassword())).role(registerDto.getRole()).active(true)
-				.businessId(registerDto.getBusinessId()).build();
+				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).businesses(List.of(saveBusiness))
+				.build();
 
 		User registeredUser = userRepository.save(user);
 
@@ -53,14 +86,13 @@ public class AuthenticationService {
 		try {
 			EmailDto emailDto = new EmailDto();
 			emailDto.setDestination(registeredUser.getEmail());
-			emailDto.setSubject("Te damos la Bienvenida a nuestra aplicacion!");
+			emailDto.setSubject("¡Te damos la Bienvenida a nuestra aplicación!");
 			emailDto.setMessage("Gentil Usuario " + user.getName() + ", le informamos que ....");
 
 			emailService.sendEmailAfterRegisterUser(emailDto, registeredUser);
 		} catch (Exception e) {
-			System.err.println("Ha ocurrido un error mientras se enviaba el correo de registro" + e.getMessage());
+			System.err.println("Ha ocurrido un error mientras se enviaba el correo de registro: " + e.getMessage());
 		}
-
 		return AuthResponseDto.builder().token(token).refreshToken(refreshToken).role(registeredUser.getRole()).build();
 	}
 
