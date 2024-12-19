@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +21,7 @@ import com.tinomaster.virtualdream.virtualDream.dtos.AuthRegisterDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthResponseDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.BusinessDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.EmailDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.AuthOwnerRegisterResponse;
 import com.tinomaster.virtualdream.virtualDream.entities.Address;
 import com.tinomaster.virtualdream.virtualDream.entities.Business;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
@@ -45,10 +47,10 @@ public class AuthenticationService {
 	private final UserRepository userRepository;
 	private final BusinessRepository businessRepository;
 	private final AddressRepository addressRepository;
+	private final ModelMapper modelMapper;
 
 	@Transactional
-	public AuthResponseDto registerOwner(AuthRegisterDto registerDto) {
-	    System.out.println(registerDto);
+	public AuthOwnerRegisterResponse registerOwner(AuthRegisterDto registerDto) {
 
 	    if (registerDto.getRole() != ERole.OWNER) {
 	        throw new InvalidRoleException("El rol proporcionado no es válido para registrar un propietario.");
@@ -60,13 +62,7 @@ public class AuthenticationService {
 	    }
 
 	    // Guardar la dirección
-	    Address addressToSave = Address.builder()
-	            .street(businessDto.getAddress().getStreet())
-	            .number(businessDto.getAddress().getNumber())
-	            .city(businessDto.getAddress().getCity())
-	            .zip(businessDto.getAddress().getZip())
-	            .build();
-	    Address savedAddress = addressRepository.save(addressToSave);
+	    Address savedAddress = addressRepository.save(modelMapper.map(businessDto.getAddress(), Address.class));
 
 	    if (savedAddress == null) {
 	        throw new IllegalStateException("Error al guardar la dirección.");
@@ -91,7 +87,6 @@ public class AuthenticationService {
 	    // Guardar el negocio con el usuario como propietario
 	    Business newBusiness = Business.builder()
 	            .name(businessDto.getName())
-	            .email(businessDto.getEmail())
 	            .phone(businessDto.getPhone())
 	            .description(businessDto.getDescription())
 	            .address(savedAddress) // Asigna la dirección guardada
@@ -113,8 +108,8 @@ public class AuthenticationService {
 	    userRepository.save(registeredUser);
 
 	    // Generar los tokens
-	    String token = jwtService.generateToken(registeredUser);
-	    String refreshToken = jwtService.generateRefreshToken(registeredUser);
+//	    String token = jwtService.generateToken(registeredUser);
+//	    String refreshToken = jwtService.generateRefreshToken(registeredUser);
 
 	    // Enviar correo
 	    try {
@@ -128,10 +123,9 @@ public class AuthenticationService {
 	        System.err.println("Ha ocurrido un error mientras se enviaba el correo de registro: " + e.getMessage());
 	    }
 
-	    return AuthResponseDto.builder()
-	            .token(token)
-	            .refreshToken(refreshToken)
-	            .role(registeredUser.getRole())
+	    return AuthOwnerRegisterResponse.builder()
+	            .success(true)
+	            .message("Registro satisfactorio")
 	            .build();
 	}
 

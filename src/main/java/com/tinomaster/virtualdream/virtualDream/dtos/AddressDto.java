@@ -15,4 +15,5 @@ public class AddressDto {
 	private String number;
 	private String city;
 	private String zip;
+	private String municipality;
 }

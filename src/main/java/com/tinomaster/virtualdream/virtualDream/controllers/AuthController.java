@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthLoginDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthRegisterDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthResponseDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.AuthOwnerRegisterResponse;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseBody;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualDream.services.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,8 +26,8 @@ public class AuthController {
 	private final AuthenticationService authService;
 
 	@PostMapping("/public/register")
-	public ResponseEntity<AuthResponseDto> registerOwner(@RequestBody AuthRegisterDto authRegister) {
-		return ResponseEntity.ok(authService.registerOwner(authRegister));
+	public ResponseEntity<ResponseBody<AuthOwnerRegisterResponse> > registerOwner(@RequestBody AuthRegisterDto authRegister) {
+		return ResponseType.ok("successfullyRegister",authService.registerOwner(authRegister));
 	}
 
 	@PostMapping("/public/authenticate")
