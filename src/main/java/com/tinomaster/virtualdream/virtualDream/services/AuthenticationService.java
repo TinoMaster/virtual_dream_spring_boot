@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinomaster.virtualdream.virtualDream.dtos.AddressDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthLoginDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthRegisterDto;
-import com.tinomaster.virtualdream.virtualDream.dtos.AuthResponseDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.BusinessDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.EmailDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.UserDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.response.AuthOwnerRegisterResponse;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.LoginResponse;
 import com.tinomaster.virtualdream.virtualDream.entities.Address;
 import com.tinomaster.virtualdream.virtualDream.entities.Business;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
@@ -48,6 +48,21 @@ public class AuthenticationService {
 	private final BusinessRepository businessRepository;
 	private final AddressRepository addressRepository;
 	private final ModelMapper modelMapper;
+	
+	public LoginResponse registerAdmin(UserDto userDto) {
+		if(userDto.getRole() != ERole.ADMIN) {
+			throw new InvalidRoleException("El rol proporcionado no es valido para registrar");
+		}
+		
+		User user = modelMapper.map(userDto, User.class);
+		
+		userRepository.save(user);
+		
+		String jwtToken = jwtService.generateToken(user);
+		String refreshToken = jwtService.generateRefreshToken(user);
+
+		return LoginResponse.builder().token(jwtToken).refreshToken(refreshToken).role(user.getRole()).build();	
+	}
 
 	@Transactional
 	public AuthOwnerRegisterResponse registerOwner(AuthRegisterDto registerDto) {
@@ -131,7 +146,7 @@ public class AuthenticationService {
 
 
 
-	public AuthResponseDto authenticate(AuthLoginDto authRequestDto) {
+	public LoginResponse authenticate(AuthLoginDto authRequestDto) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword()));
 
@@ -142,7 +157,7 @@ public class AuthenticationService {
 		String jwtToken = jwtService.generateToken(user);
 		String refreshToken = jwtService.generateRefreshToken(user);
 
-		return AuthResponseDto.builder().token(jwtToken).refreshToken(refreshToken).role(user.getRole()).build();
+		return LoginResponse.builder().token(jwtToken).refreshToken(refreshToken).role(user.getRole()).build();
 	}
 
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response)
@@ -161,7 +176,7 @@ public class AuthenticationService {
 			var user = this.userRepository.findByEmail(userEmail).orElseThrow();
 			if (jwtService.isTokenValid(refreshToken, user)) {
 				var accessToken = jwtService.generateToken(user);
-				var authResponse = AuthResponseDto.builder().token(accessToken).refreshToken(refreshToken).build();
+				var authResponse = LoginResponse.builder().token(accessToken).refreshToken(refreshToken).build();
 				new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
 			}
 		}

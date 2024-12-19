@@ -1,4 +1,4 @@
-package com.tinomaster.virtualdream.virtualDream.dtos;
+package com.tinomaster.virtualdream.virtualDream.dtos.response;
 
 import com.tinomaster.virtualdream.virtualDream.enums.ERole;
 
@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponseDto {
-
+public class LoginResponse {
 	private String token;
 	private String refreshToken;
 	private ERole role;

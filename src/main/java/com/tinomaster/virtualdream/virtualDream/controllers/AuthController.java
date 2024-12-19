@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthLoginDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.AuthRegisterDto;
-import com.tinomaster.virtualdream.virtualDream.dtos.AuthResponseDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.response.AuthOwnerRegisterResponse;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.LoginResponse;
 import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseBody;
 import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualDream.services.AuthenticationService;
@@ -31,7 +31,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/public/authenticate")
-	public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthLoginDto authLogin) {
+	public ResponseEntity<LoginResponse> authenticate(@RequestBody AuthLoginDto authLogin) {
 		System.out.println(authLogin);
 		return ResponseEntity.ok(authService.authenticate(authLogin));
 	}

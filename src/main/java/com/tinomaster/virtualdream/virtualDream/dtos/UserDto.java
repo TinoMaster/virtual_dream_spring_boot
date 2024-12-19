@@ -3,6 +3,8 @@ package com.tinomaster.virtualdream.virtualDream.dtos;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.tinomaster.virtualdream.virtualDream.enums.ERole;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +19,7 @@ public class UserDto {
 	private String name;
 	private String email;
 	private String password;
-	private String role;
+	private ERole role;
 	private boolean active;
 	private List<BusinessDto> businesses;
 	private LocalDateTime createdAt;
