@@ -1,11 +1,14 @@
 package com.tinomaster.virtualdream.virtualDream.controllers;
 
 import com.tinomaster.virtualdream.virtualDream.dtos.UserDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseBody;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
 import com.tinomaster.virtualdream.virtualDream.exceptions.NotFoundException;
 import com.tinomaster.virtualdream.virtualDream.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,9 +32,23 @@ public class UserController {
 	}
 
 	@GetMapping("/superadmin/users")
-	public List<UserDto> getAllUsers() {
+	public ResponseEntity<ResponseBody<List<UserDto>>> getAllUsers() {
 		var usersList = StreamSupport.stream(userService.getAllUsers().spliterator(), false).toList();
-		return usersList.stream().map(this::userToUserDto).collect(Collectors.toList());
+		List<UserDto> users = usersList.stream().map(this::userToUserDto).collect(Collectors.toList());
+		return ResponseType.ok("successfullyRequest", users);
+	}
+
+	@GetMapping("/superadmin/auth-requests")
+	public ResponseEntity<ResponseBody<List<UserDto>>> getUnauthorizedRequests() {
+		var userList = StreamSupport.stream(userService.getUnauthorizedUsers().spliterator(), false).toList();
+		List<UserDto> users = userList.stream().map(this::userToUserDto).collect(Collectors.toList());
+		return ResponseType.ok("successfullyRequest", users);
+	}
+	
+	@PutMapping("/superadmin/auth-requests/{id}")
+	public ResponseEntity<ResponseBody<Object>> activeUser(@PathVariable Long id){
+		userService.activeUser(id);
+		return ResponseType.ok("successfullyActivated");
 	}
 
 	@GetMapping("/private/{id}")

@@ -15,6 +15,14 @@ public class ResponseType<T> {
                 .build(), HttpStatus.OK
         );
     }
+    
+    public static ResponseEntity<ResponseBody<Object>> ok(String message) {
+        return new ResponseEntity<>(ResponseBody.builder()
+                .status(HttpStatus.OK.value())
+                .message(message)
+                .build(), HttpStatus.OK
+        );
+    }
 
     public static ResponseEntity<ResponseBody<Object>> noContent() {
         return new ResponseEntity<>(ResponseBody.builder()

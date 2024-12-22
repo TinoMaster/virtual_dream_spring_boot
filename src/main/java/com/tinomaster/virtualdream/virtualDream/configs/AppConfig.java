@@ -16,10 +16,13 @@ import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@RequiredArgsConstructor
 public class AppConfig {
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+
+	public AppConfig(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Bean
 	UserDetailsService userDetailsService() {

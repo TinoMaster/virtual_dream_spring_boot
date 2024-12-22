@@ -26,14 +26,14 @@ public class AuthController {
 	private final AuthenticationService authService;
 
 	@PostMapping("/public/register")
-	public ResponseEntity<ResponseBody<AuthOwnerRegisterResponse> > registerOwner(@RequestBody AuthRegisterDto authRegister) {
-		return ResponseType.ok("successfullyRegister",authService.registerOwner(authRegister));
+	public ResponseEntity<ResponseBody<AuthOwnerRegisterResponse>> registerOwner(
+			@RequestBody AuthRegisterDto authRegister) {
+		return ResponseType.ok("successfullyRegister", authService.registerOwner(authRegister));
 	}
 
 	@PostMapping("/public/authenticate")
-	public ResponseEntity<LoginResponse> authenticate(@RequestBody AuthLoginDto authLogin) {
-		System.out.println(authLogin);
-		return ResponseEntity.ok(authService.authenticate(authLogin));
+	public ResponseEntity<ResponseBody<LoginResponse>> authenticate(@RequestBody AuthLoginDto authLogin) {
+		return ResponseType.ok("successfullyLogin", authService.authenticate(authLogin));
 	}
 
 }

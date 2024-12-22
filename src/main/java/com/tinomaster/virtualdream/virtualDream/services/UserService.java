@@ -3,6 +3,9 @@ package com.tinomaster.virtualdream.virtualDream.services;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,8 +18,16 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User by id " + id + " not found"));
     }
 
-    public Iterable<User> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+    
+    public List<User> getUnauthorizedUsers(){
+    	return userRepository.findByActiveFalse();
+    }
+    
+    public void activeUser(Long id) {
+    	userRepository.activeUser(id);
     }
 
     public User getUserById(long id) {

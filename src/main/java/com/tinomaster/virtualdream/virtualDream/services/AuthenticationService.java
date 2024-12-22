@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -76,14 +77,12 @@ public class AuthenticationService {
 	        throw new IllegalArgumentException("Se requiere el negocio para registrar un propietario.");
 	    }
 
-	    // Guardar la dirección
 	    Address savedAddress = addressRepository.save(modelMapper.map(businessDto.getAddress(), Address.class));
 
 	    if (savedAddress == null) {
 	        throw new IllegalStateException("Error al guardar la dirección.");
 	    }
 
-	    // Guardar el usuario primero
 	    User user = User.builder()
 	            .name(registerDto.getName())
 	            .email(registerDto.getEmail())
@@ -99,7 +98,6 @@ public class AuthenticationService {
 	        throw new IllegalStateException("Error al guardar el usuario.");
 	    }
 
-	    // Guardar el negocio con el usuario como propietario
 	    Business newBusiness = Business.builder()
 	            .name(businessDto.getName())
 	            .phone(businessDto.getPhone())
@@ -115,18 +113,11 @@ public class AuthenticationService {
 	        throw new IllegalStateException("Error al guardar el negocio.");
 	    }
 	    
-
-	    // Actualizar el usuario con el negocio guardado
 	    List<Business> businesses = new ArrayList<>();
 	    businesses.add(savedBusiness);
 	    registeredUser.setBusinesses(businesses);
 	    userRepository.save(registeredUser);
 
-	    // Generar los tokens
-//	    String token = jwtService.generateToken(registeredUser);
-//	    String refreshToken = jwtService.generateRefreshToken(registeredUser);
-
-	    // Enviar correo
 	    try {
 	        EmailDto emailDto = new EmailDto();
 	        emailDto.setDestination(registeredUser.getEmail());
@@ -145,19 +136,27 @@ public class AuthenticationService {
 	}
 
 
-
 	public LoginResponse authenticate(AuthLoginDto authRequestDto) {
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword()));
+		try {
+		    authenticationManager.authenticate(
+		        new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword())
+		    );
+		} catch (Exception e) {
+		    e.printStackTrace();
+		    throw new BadCredentialsException("Error de autenticación: " + e.getMessage());
+		}
 
 		User user = userRepository.findByEmail(authRequestDto.getEmail())
 				.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
-		System.out.println("Usuario autenticado: " + user);
+		
+		if(!user.isActive()) {
+			return LoginResponse.builder().active(false).build();
+		}
+		
 		String jwtToken = jwtService.generateToken(user);
 		String refreshToken = jwtService.generateRefreshToken(user);
 
-		return LoginResponse.builder().token(jwtToken).refreshToken(refreshToken).role(user.getRole()).build();
+		return LoginResponse.builder().token(jwtToken).refreshToken(refreshToken).role(user.getRole()).active(true).build();
 	}
 
 	public void refreshToken(HttpServletRequest request, HttpServletResponse response)

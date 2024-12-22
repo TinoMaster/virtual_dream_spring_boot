@@ -23,13 +23,17 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/public/**").permitAll()
-						.requestMatchers("/api/v1/superadmin/**").hasAuthority("SUPERADMIN")
-						.requestMatchers("/api/v1/owner/**").hasAnyAuthority("SUPERADMIN", "OWNER")
-						.requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPERADMIN", "OWNER")
-						.requestMatchers("/api/v1/private/**").authenticated().anyRequest().authenticated())
-				.authenticationProvider(authenticationProvider)
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
+		http.csrf(AbstractHttpConfigurer::disable)
+		.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/public/**").permitAll()
+				.requestMatchers("/api/v1/superadmin/**").hasAuthority("SUPERADMIN")
+				.requestMatchers("/api/v1/owner/**").hasAnyAuthority("SUPERADMIN", "OWNER")
+				.requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPERADMIN", "OWNER")
+				.requestMatchers("/api/v1/private/**").authenticated().anyRequest().authenticated())
+		.authenticationProvider(authenticationProvider)
+		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		
+		http.cors();
+		
+		return http.build();
 	}
 }
