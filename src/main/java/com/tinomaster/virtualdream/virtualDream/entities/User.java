@@ -49,7 +49,7 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private boolean active;
 
-	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
 	@JsonIgnore
 	private List<Business> businesses;
 
