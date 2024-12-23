@@ -38,28 +38,29 @@ public class UserController {
 		return ResponseType.ok("successfullyRequest", users);
 	}
 
+	@GetMapping("/private/users/{id}")
+	public ResponseEntity<ResponseBody<UserDto>> getUserById(@PathVariable Long id) {
+		UserDto user = this.userToUserDto(userService.getUserById(id));
+		return ResponseType.ok("successfullyRequest", user);
+	}
+
 	@GetMapping("/superadmin/auth-requests")
 	public ResponseEntity<ResponseBody<List<UserDto>>> getUnauthorizedRequests() {
 		var userList = StreamSupport.stream(userService.getUnauthorizedUsers().spliterator(), false).toList();
 		List<UserDto> users = userList.stream().map(this::userToUserDto).collect(Collectors.toList());
 		return ResponseType.ok("successfullyRequest", users);
 	}
-	
+
 	@PutMapping("/superadmin/auth-requests/{id}")
-	public ResponseEntity<ResponseBody<Object>> activeUser(@PathVariable Long id){
+	public ResponseEntity<ResponseBody<Object>> activeUser(@PathVariable Long id) {
 		userService.activeUser(id);
 		return ResponseType.ok("successfullyActivated");
 	}
-	
+
 	@DeleteMapping("/superadmin/auth-requests/{id}")
-	public ResponseEntity<ResponseBody<Object>> denyUser(@PathVariable Long id){
+	public ResponseEntity<ResponseBody<Object>> denyUser(@PathVariable Long id) {
 		userService.denyUser(id);
 		return ResponseType.ok("susccessfullyDeny");
-	}
-
-	@GetMapping("/private/{id}")
-	public UserDto getUserById(Long id) {
-		return userToUserDto(userService.getUserById(id));
 	}
 
 	@PostMapping

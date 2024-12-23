@@ -1,8 +1,6 @@
 package com.tinomaster.virtualdream.virtualDream.services;
 
-import com.tinomaster.virtualdream.virtualDream.entities.Business;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
-import com.tinomaster.virtualdream.virtualDream.repositories.AddressRepository;
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -17,9 +15,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
 	private final UserRepository userRepository;
-	private final AddressRepository addressRepository;
-
-	private final BusinessService businessService;
 
 	private User findOrThrow(final long id) {
 		return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User by id " + id + " not found"));
@@ -31,6 +26,10 @@ public class UserService {
 
 	public List<User> getUnauthorizedUsers() {
 		return userRepository.findByActiveFalse();
+	}
+
+	public User getUserById(Long id) {
+		return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User by id " + id + " not found"));
 	}
 
 	public void activeUser(Long id) {
