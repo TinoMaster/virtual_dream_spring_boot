@@ -50,6 +50,12 @@ public class UserController {
 		userService.activeUser(id);
 		return ResponseType.ok("successfullyActivated");
 	}
+	
+	@DeleteMapping("/superadmin/auth-requests/{id}")
+	public ResponseEntity<ResponseBody<Object>> denyUser(@PathVariable Long id){
+		userService.denyUser(id);
+		return ResponseType.ok("susccessfullyDeny");
+	}
 
 	@GetMapping("/private/{id}")
 	public UserDto getUserById(Long id) {
