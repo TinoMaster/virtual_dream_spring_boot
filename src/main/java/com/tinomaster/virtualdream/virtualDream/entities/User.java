@@ -17,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tinomaster.virtualdream.virtualDream.enums.ERole;
 
 @Entity
@@ -49,9 +50,13 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private boolean active;
 
-	@OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
-	@JsonIgnore
-	private List<Business> businesses;
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = false)
+	@JsonManagedReference
+    private List<Business> businessesOwned; // Lista de negocios donde es propietario.
+
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private List<Business> businesses; // Lista de negocios asociados con el usuario.
 
 	@Column(nullable = false, updatable = false)
 	@CreationTimestamp

@@ -51,11 +51,16 @@ public class AuthenticationService {
 	private final ModelMapper modelMapper;
 	
 	public LoginResponse registerAdmin(UserDto userDto) {
-		if(userDto.getRole() != ERole.ADMIN) {
+		if(userDto.getRole() != ERole.SUPERADMIN) {
 			throw new InvalidRoleException("El rol proporcionado no es valido para registrar");
 		}
 		
 		User user = modelMapper.map(userDto, User.class);
+		
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		user.setActive(true);
+		user.setCreatedAt(LocalDateTime.now());
+		user.setUpdatedAt(LocalDateTime.now());
 		
 		userRepository.save(user);
 		
@@ -115,7 +120,7 @@ public class AuthenticationService {
 	    
 	    List<Business> businesses = new ArrayList<>();
 	    businesses.add(savedBusiness);
-	    registeredUser.setBusinesses(businesses);
+	    registeredUser.setBusinessesOwned(businesses);
 	    userRepository.save(registeredUser);
 
 	    try {

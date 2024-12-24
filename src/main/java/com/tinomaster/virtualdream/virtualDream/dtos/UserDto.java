@@ -22,6 +22,7 @@ public class UserDto {
 	private ERole role;
 	private boolean active;
 	private List<BusinessDto> businesses;
+	private List<BusinessDto> businessesOwned;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }
