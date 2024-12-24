@@ -1,6 +1,7 @@
 package com.tinomaster.virtualdream.virtualDream.services;
 
 import com.tinomaster.virtualdream.virtualDream.dtos.UserDto;
+import com.tinomaster.virtualdream.virtualDream.entities.Business;
 import com.tinomaster.virtualdream.virtualDream.entities.User;
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
@@ -33,11 +34,25 @@ public class UserService {
 	public User saveUser(UserDto userDto) {
 		User user = mapper.map(userDto, User.class);
 
+		List<Business> businesses = userDto.getBusinesses().stream().map( bsn -> {
+			return businessService.getBusinessById(bsn.getId());
+		}).toList();
+		
+		user.setBusinesses(businesses);
+		user.setId(null);
+		System.out.println(userDto);
+
 		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		user.setCreatedAt(LocalDateTime.now());
 		user.setUpdatedAt(LocalDateTime.now());
-
-		return userRepository.save(user);
+		User userToReturn;
+		try {
+			userToReturn = userRepository.save(user);
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return userToReturn;
 	}
 
 	public List<User> getAllUsers() {
@@ -50,6 +65,10 @@ public class UserService {
 
 	public User getUserById(Long id) {
 		return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User by id " + id + " not found"));
+	}
+	
+	public User getUserByEmail(String email) {
+		return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User by email " + email + " not found"));
 	}
 
 	public void activeUser(Long id) {

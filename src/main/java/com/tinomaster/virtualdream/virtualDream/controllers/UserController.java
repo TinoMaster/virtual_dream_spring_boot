@@ -43,6 +43,12 @@ public class UserController {
 		UserDto user = this.userToUserDto(userService.getUserById(id));
 		return ResponseType.ok("successfullyRequest", user);
 	}
+	
+	@GetMapping("/private/users/byEmail/{email}")
+	public ResponseEntity<ResponseBody<UserDto>> getUserByEmail(@PathVariable String email) {
+		UserDto user = this.userToUserDto(userService.getUserByEmail(email));
+		return ResponseType.ok("successfullyRequest", user);
+	}
 
 	@GetMapping("/superadmin/auth-requests")
 	public ResponseEntity<ResponseBody<List<UserDto>>> getUnauthorizedRequests() {

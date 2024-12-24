@@ -18,6 +18,10 @@ public class BusinessService {
 	public List<Business> getBusinessesByUserId(Long userId) {
 		return businessRepository.findBusinessesByUserId(userId);
 	}
+	
+	public Business getBusinessById(Long businessId) {
+		return businessRepository.findById(businessId).orElseThrow(() -> new RuntimeException("No se encuentra el business con id " + businessId));
+	}
 
 	public void deleteBusinessesByUserId(Long userId) {
 		businessRepository.deleteBusinessesByUserId(userId);

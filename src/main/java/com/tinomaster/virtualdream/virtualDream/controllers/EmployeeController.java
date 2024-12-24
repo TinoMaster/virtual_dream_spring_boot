@@ -1,6 +1,12 @@
 package com.tinomaster.virtualdream.virtualDream.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +26,21 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeController {
 
 	private final EmployeeService employeeService;
+	private final ModelMapper mapper;
 
-	@PostMapping("/admin/employee")
+	private EmployeeDto employeeToEmployeeDto(Employee employee) {
+		return mapper.map(employee, EmployeeDto.class);
+	}
+
+	@GetMapping("/admin/employees")
+	public ResponseEntity<ResponseBody<List<EmployeeDto>>> getEmployees() {
+		var employeeList = StreamSupport.stream(employeeService.getEmployees().spliterator(), false).toList();
+		List<EmployeeDto> employees = employeeList.stream().map(this::employeeToEmployeeDto)
+				.collect(Collectors.toList());
+		return ResponseType.ok("successfullyRequest", employees);
+	}
+
+	@PostMapping("/admin/employees")
 	public ResponseEntity<ResponseBody<Employee>> saveEmployee(@RequestBody EmployeeDto employeeDto) {
 		return ResponseType.ok("successfullySaved", employeeService.saveEmployee(employeeDto));
 	}
