@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,12 @@ public class BusinessController {
 		List<BusinessDto> businesses = businessList.stream().map(this::businessToBusinessDto)
 				.collect(Collectors.toList());
 		return ResponseType.ok("successfullyRequest", businesses);
+	}
+
+	@GetMapping("/owner/businesses/{id}")
+	public ResponseEntity<ResponseBody<BusinessDto>> getBusinessById(@PathVariable Long id) {
+		return ResponseType.ok("successfullyRequest",
+				mapper.map(businessService.getBusinessById(id), BusinessDto.class));
 	}
 
 	@PostMapping("/owner/businesses")

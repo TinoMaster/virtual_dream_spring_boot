@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,17 @@ public class EmployeeController {
 		return mapper.map(employee, EmployeeDto.class);
 	}
 
-	@GetMapping("/admin/employees")
+	@GetMapping("/superadmin/employees")
 	public ResponseEntity<ResponseBody<List<EmployeeDto>>> getEmployees() {
 		var employeeList = StreamSupport.stream(employeeService.getEmployees().spliterator(), false).toList();
+		List<EmployeeDto> employees = employeeList.stream().map(this::employeeToEmployeeDto)
+				.collect(Collectors.toList());
+		return ResponseType.ok("successfullyRequest", employees);
+	}
+	
+	@GetMapping("/admin/employees/byBusiness/{id}")
+	public ResponseEntity<ResponseBody<List<EmployeeDto>>> getEmployeesByBusinessId(@PathVariable Long id) {
+		var employeeList = StreamSupport.stream(employeeService.getEmployeesByBusinessId(id).spliterator(), false).toList();
 		List<EmployeeDto> employees = employeeList.stream().map(this::employeeToEmployeeDto)
 				.collect(Collectors.toList());
 		return ResponseType.ok("successfullyRequest", employees);
