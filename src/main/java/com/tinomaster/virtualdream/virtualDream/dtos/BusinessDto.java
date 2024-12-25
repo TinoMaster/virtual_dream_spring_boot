@@ -18,6 +18,7 @@ public class BusinessDto {
 	private String description;
 	private String phone;
 	private List<Long> users;
+	private Long owner;
 	private AddressDto address;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

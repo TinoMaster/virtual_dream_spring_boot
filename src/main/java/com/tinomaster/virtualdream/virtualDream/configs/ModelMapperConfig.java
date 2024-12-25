@@ -29,9 +29,21 @@ public class ModelMapperConfig {
 			}
 		};
 
+		// Crear un converter para mapear un User a su ID
+		Converter<User, Long> userToIdSingleConverter = new Converter<User, Long>() {
+			@Override
+			public Long convert(MappingContext<User, Long> context) {
+				return context.getSource() == null ? null : context.getSource().getId();
+			}
+		};
+
 		// Agregar el mapeo para Business -> BusinessDto
-		modelMapper.typeMap(Business.class, BusinessDto.class)
-				.addMappings(mapper -> mapper.using(userToIdConverter).map(Business::getUsers, BusinessDto::setUsers));
+		modelMapper.typeMap(Business.class, BusinessDto.class).addMappings(mapper -> {
+			// Mapear la lista de Users a una lista de IDs
+			mapper.using(userToIdConverter).map(Business::getUsers, BusinessDto::setUsers);
+			// Mapear el owner (User) a su ID
+			mapper.using(userToIdSingleConverter).map(Business::getOwner, BusinessDto::setOwner);
+		});
 
 		return modelMapper;
 	}

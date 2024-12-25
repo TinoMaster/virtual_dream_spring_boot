@@ -1,0 +1,48 @@
+package com.tinomaster.virtualdream.virtualDream.controllers;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tinomaster.virtualdream.virtualDream.dtos.BusinessDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseBody;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseType;
+import com.tinomaster.virtualdream.virtualDream.entities.Business;
+import com.tinomaster.virtualdream.virtualDream.services.BusinessService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/v1")
+public class BusinessController {
+
+	private final ModelMapper mapper;
+	private final BusinessService businessService;
+
+	private BusinessDto businessToBusinessDto(Business business) {
+		return mapper.map(business, BusinessDto.class);
+	}
+
+	@GetMapping("/superadmin/businesses")
+	public ResponseEntity<ResponseBody<List<BusinessDto>>> getBusinesses() {
+		var businessList = StreamSupport.stream(businessService.getAllBusinesses().spliterator(), false).toList();
+		List<BusinessDto> businesses = businessList.stream().map(this::businessToBusinessDto)
+				.collect(Collectors.toList());
+		return ResponseType.ok("successfullyRequest", businesses);
+	}
+
+	@PostMapping("/owner/businesses")
+	public ResponseEntity<ResponseBody<BusinessDto>> saveBusiness(@RequestBody BusinessDto businessDto) {
+		return ResponseType.ok("successfullySaved",
+				mapper.map(businessService.saveBusiness(businessDto), BusinessDto.class));
+	}
+}
