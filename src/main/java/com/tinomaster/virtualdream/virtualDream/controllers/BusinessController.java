@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,5 +52,11 @@ public class BusinessController {
 	public ResponseEntity<ResponseBody<BusinessDto>> saveBusiness(@RequestBody BusinessDto businessDto) {
 		return ResponseType.ok("successfullySaved",
 				mapper.map(businessService.saveBusiness(businessDto), BusinessDto.class));
+	}
+
+	@DeleteMapping("/owner/businesses/{id}")
+	public ResponseEntity<ResponseBody<Object>> deleteById(@PathVariable Long id) {
+		businessService.deleteBusiness(id);
+		return ResponseType.ok("successfullyDelete");
 	}
 }

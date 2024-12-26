@@ -36,7 +36,7 @@ public class Business {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
-	private long id;
+	private Long id;
 
 	@Column(nullable = false, unique = true)
 	private String name;

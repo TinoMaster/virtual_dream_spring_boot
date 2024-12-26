@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,10 +41,17 @@ public class EmployeeController {
 				.collect(Collectors.toList());
 		return ResponseType.ok("successfullyRequest", employees);
 	}
-	
+
+	@GetMapping("/admin/employees/{id}")
+	public ResponseEntity<ResponseBody<EmployeeDto>> getEmployeeById(@PathVariable Long id) {
+		EmployeeDto employee = employeeToEmployeeDto(employeeService.getEmployeeById(id));
+		return ResponseType.ok("successfullyRequest", employee);
+	}
+
 	@GetMapping("/admin/employees/byBusiness/{id}")
 	public ResponseEntity<ResponseBody<List<EmployeeDto>>> getEmployeesByBusinessId(@PathVariable Long id) {
-		var employeeList = StreamSupport.stream(employeeService.getEmployeesByBusinessId(id).spliterator(), false).toList();
+		var employeeList = StreamSupport.stream(employeeService.getEmployeesByBusinessId(id).spliterator(), false)
+				.toList();
 		List<EmployeeDto> employees = employeeList.stream().map(this::employeeToEmployeeDto)
 				.collect(Collectors.toList());
 		return ResponseType.ok("successfullyRequest", employees);
@@ -52,5 +60,11 @@ public class EmployeeController {
 	@PostMapping("/admin/employees")
 	public ResponseEntity<ResponseBody<Employee>> saveEmployee(@RequestBody EmployeeDto employeeDto) {
 		return ResponseType.ok("successfullySaved", employeeService.saveEmployee(employeeDto));
+	}
+
+	@DeleteMapping("/admin/employees/{id}")
+	public ResponseEntity<ResponseBody<Object>> deleteEmployee(@PathVariable Long id) {
+		employeeService.deleteEmployee(id);
+		return ResponseType.ok("successfullyDeleted");
 	}
 }

@@ -31,6 +31,11 @@ public class EmployeeService {
 
 	private final ModelMapper mapper;
 
+	private Employee findOrThrow(final Long id) {
+		return employeeRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Employee by id " + id + " not found"));
+	}
+
 	public List<Employee> getEmployees() {
 		return employeeRepository.findAll();
 	}
@@ -44,9 +49,16 @@ public class EmployeeService {
 		return employeeRepository.findByUserIds(usersIds);
 	}
 
+	public Employee getEmployeeById(Long id) {
+		return employeeRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("No se ha encontrado un empleado con el id: " + id));
+	}
+
 	@Transactional
 	public Employee saveEmployee(EmployeeDto employeeDto) {
-		if (employeeDto.getUser().getRole() != ERole.EMPLOYEE) {
+		ERole role = employeeDto.getUser().getRole();
+		System.out.println();
+		if (role != ERole.EMPLOYEE && role != ERole.ADMIN && role != ERole.USER) {
 			throw new InvalidRoleException("El rol proporcionado no es válido para registrar un empleado.");
 		}
 
@@ -56,5 +68,24 @@ public class EmployeeService {
 				.address(address).build();
 
 		return employeeRepository.save(employee);
+	}
+
+	@Transactional
+	public void deleteEmployee(Long id) {
+		Employee employee = this.findOrThrow(id);
+
+		User user = employee.getUser();
+
+		List<Business> businesses = user.getBusinesses();
+
+		if (!businesses.isEmpty()) {
+			for (Business business : businesses) {
+				business.getUsers().remove(user);
+				businessRepository.save(business);
+			}
+		}
+
+		employeeRepository.delete(employee);
+
 	}
 }

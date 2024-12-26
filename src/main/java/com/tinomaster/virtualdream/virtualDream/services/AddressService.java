@@ -19,4 +19,9 @@ public class AddressService {
 	public Address saveAddress(AddressDto addressDto) {
 		return addressRepository.save(modelMapper.map(addressDto, Address.class));
 	}
+
+	public void deleteById(Long id) {
+		addressRepository.deleteById(id);
+	}
+
 }

@@ -36,32 +36,30 @@ public class UserService {
 	public User saveUser(UserDto userDto) {
 		User user = mapper.map(userDto, User.class);
 
-		user.setId(null);
-		System.out.println(userDto);
+		if (userDto.getId() == null) {
+			user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+			user.setCreatedAt(LocalDateTime.now());
+			user.setUpdatedAt(LocalDateTime.now());
 
-		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-		user.setCreatedAt(LocalDateTime.now());
-		user.setUpdatedAt(LocalDateTime.now());
+			List<Business> existingBusinesses = new ArrayList<>();
 
-		List<Business> existingBusinesses = new ArrayList<>();
+			if (userDto.getBusinesses() != null && !userDto.getBusinesses().isEmpty()) {
+				for (BusinessDto businessDto : userDto.getBusinesses()) {
+					Business existingBusiness = businessService.getBusinessById(businessDto.getId());
 
-		if (userDto.getBusinesses() != null && !userDto.getBusinesses().isEmpty()) {
-			for (BusinessDto businessDto : userDto.getBusinesses()) {
-				Business existingBusiness = businessService.getBusinessById(businessDto.getId());
-				
-				existingBusiness.getUsers().add(user);
-				existingBusinesses.add(existingBusiness);
+					existingBusiness.getUsers().add(user);
+					existingBusinesses.add(existingBusiness);
+				}
 			}
-		}
 
-		user.setBusinesses(existingBusinesses);
+			user.setBusinesses(existingBusinesses);
+		}
 
 		try {
 			return userRepository.save(user);
 		} catch (Exception e) {
 			throw e;
 		}
-
 	}
 
 	public List<User> getAllUsers() {

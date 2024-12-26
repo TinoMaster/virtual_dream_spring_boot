@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public interface BusinessRepository extends JpaRepository<Business, Long> {
 
 	@Query(value = "SELECT * FROM business WHERE owner_id = :id", nativeQuery = true)
-	List<Business> findBusinessesByUserId(@Param("id") Long id);
+	List<Business> findBusinessesByOwnerId(@Param("id") Long id);
 
 	@Transactional
 	@Modifying
