@@ -31,7 +31,7 @@ public class EmployeeService {
 
 	private final ModelMapper mapper;
 
-	private Employee findOrThrow(final Long id) {
+	public Employee findOrThrow(final Long id) {
 		return employeeRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("Employee by id " + id + " not found"));
 	}

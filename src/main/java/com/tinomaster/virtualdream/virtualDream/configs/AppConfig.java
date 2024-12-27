@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 public class AppConfig {
 

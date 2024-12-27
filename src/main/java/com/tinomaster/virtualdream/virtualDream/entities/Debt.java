@@ -1,13 +1,15 @@
 package com.tinomaster.virtualdream.virtualDream.entities;
 
-import jakarta.persistence.CascadeType;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,35 +17,35 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "debt")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Employee {
-
+public class Debt {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
 	private Long id;
+	
+	@Column(nullable = false)
+	private String name;
+	
+	@Column(nullable = true)
+	private String description;
+	
+	@Column(nullable = false)
+	private Float total;
+	
+	@Column(nullable = false)
+	private Float paid;
+	
+	@Column(nullable = false, updatable = false)
+	@CreationTimestamp
+	private LocalDateTime createdAt;
 
 	@Column(nullable = false)
-	private String phone;
-
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "address_id", referencedColumnName = "id")
-	private Address address;
-
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
-
-	@Column(nullable = false)
-	private String dni;
-
-	@Column(nullable = true)
-	private Float percentSalary;
-
-	@Column(nullable = true)
-	private Integer fixedSalary;
+	@UpdateTimestamp
+	private LocalDateTime updatedAt;
 }

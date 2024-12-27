@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.tinomaster.virtualdream.virtualDream.entities.Employee;
-import com.tinomaster.virtualdream.virtualDream.entities.User;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {

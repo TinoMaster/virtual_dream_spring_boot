@@ -1,5 +1,7 @@
 package com.tinomaster.virtualdream.virtualDream.dtos;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,12 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EmployeeDto {
+public class DebtDto {
 	private Long id;
-	private String phone;
-	private AddressDto address;
-	private UserDto user;
-	private String dni;
-	private Float percentSalary;
-	private Integer fixedSalary;
+	private String name;
+	private String description;
+	private Float total;
+	private Float paid;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 }
