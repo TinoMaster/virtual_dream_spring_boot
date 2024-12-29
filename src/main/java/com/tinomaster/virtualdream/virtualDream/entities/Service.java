@@ -22,47 +22,35 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "business_final_sale")
+@Table(name = "service")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessFinalSale {
-
+public class Service {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
 	private Long id;
-	
-	@Column(nullable = true)
+
+	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = true)
+	private String description;
+
+	@Column(nullable = false)
+	private Float price;
 
 	@ManyToOne
 	@JoinColumn(name = "business_id", referencedColumnName = "id")
 	private Business business;
 
-	@Column(nullable = false)
-	private Float total;
-
-	@Column(nullable = false)
-	private Float paid;
-
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Debt> debts;
-	
-	@OneToMany
-	private List<Machine> machines;
+	@JoinColumn(name = "service_id")
+	private List<ConsumableCost> costs;
 
-	@Column(nullable = true)
-	private String note;
-
-	@OneToMany
-	private List<Employee> workers;
-
-	@Column(nullable = false)
-	private Float found;
-
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false, unique = true)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 

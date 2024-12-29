@@ -30,6 +30,11 @@ public class BusinessService {
 
 	private final ModelMapper mapper;
 
+	public Business findOrThrow(Long id) {
+		return businessRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("No se encuentra el business con id: " + id));
+	}
+
 	public List<Business> getBusinessesByUserId(Long userId) {
 		return businessRepository.findBusinessesByOwnerId(userId);
 	}

@@ -40,13 +40,13 @@ public class ThemeController {
 		return ResponseType.ok("successfullyRequest", themes);
 	}
 
-	@GetMapping("/private/theme/{id}")
+	@GetMapping("/superadmin/theme/{id}")
 	public ResponseEntity<ResponseBody<ThemeDto>> getThemeById(@PathVariable Long id) {
 		ThemeDto theme = this.themeToThemeDto(themeService.getThemeById(id));
 		return ResponseType.ok("successfullyRequest", theme);
 	}
 
-	@PostMapping("/private/theme")
+	@PostMapping("/superadmin/theme")
 	public ResponseEntity<ResponseBody<ThemeDto>> saveTheme(@RequestBody ThemeDto themeDto) {
 		return ResponseType.ok("successfullySaved", this.themeToThemeDto(themeService.saveTheme(themeDto)));
 	}

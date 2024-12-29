@@ -12,7 +12,7 @@ import org.springframework.web.filter.CorsFilter;
 public class CorsConfig {
 
 	@Bean
-	public CorsFilter corsFilter() {
+	CorsFilter corsFilter() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 
 		// Configura las reglas de CORS

@@ -1,20 +1,21 @@
 package com.tinomaster.virtualdream.virtualDream.entities;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.CascadeType;
+import com.tinomaster.virtualdream.virtualDream.enums.EUnit;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,45 +23,35 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "business_final_sale")
+@Table(name = "consumable")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BusinessFinalSale {
-
+public class Consumable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
 	private Long id;
-	
-	@Column(nullable = true)
+
+	@Column(nullable = false)
 	private String name;
+
+	@Column(nullable = false)
+	private Float price;
+
+	@Column(nullable = true)
+	private String description;
+
+	@Enumerated(EnumType.STRING)
+	private EUnit unit;
+
+	@Column(nullable = false)
+	private Float stock;
 
 	@ManyToOne
 	@JoinColumn(name = "business_id", referencedColumnName = "id")
 	private Business business;
-
-	@Column(nullable = false)
-	private Float total;
-
-	@Column(nullable = false)
-	private Float paid;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Debt> debts;
-	
-	@OneToMany
-	private List<Machine> machines;
-
-	@Column(nullable = true)
-	private String note;
-
-	@OneToMany
-	private List<Employee> workers;
-
-	@Column(nullable = false)
-	private Float found;
 
 	@Column(nullable = false, updatable = false)
 	@CreationTimestamp

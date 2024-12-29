@@ -12,18 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BusinessFinalSaleDto {
-
+public class ServiceDto {
 	private Long id;
 	private String name;
-	private BusinessDto business;
-	private Float total;
-	private Float paid;
-	private List<DebtDto> debts;
-	private List<MachineDto> machines;
-	private String note;
-	private List<EmployeeDto> workers;
-	private Float found;
+	private String description;
+	private Float price;
+	private Long business;
+	private List<ConsumableCostDto> costs;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }

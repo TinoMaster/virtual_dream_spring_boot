@@ -1,7 +1,8 @@
 package com.tinomaster.virtualdream.virtualDream.dtos;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
+import com.tinomaster.virtualdream.virtualDream.enums.EUnit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,18 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BusinessFinalSaleDto {
-
+public class ConsumableDto {
 	private Long id;
 	private String name;
-	private BusinessDto business;
-	private Float total;
-	private Float paid;
-	private List<DebtDto> debts;
-	private List<MachineDto> machines;
-	private String note;
-	private List<EmployeeDto> workers;
-	private Float found;
+	private Float price;
+	private String description;
+	private EUnit unit;
+	private Float stock;
+	private Long business;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }
