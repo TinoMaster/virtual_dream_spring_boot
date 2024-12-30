@@ -18,6 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,9 @@ public class Business {
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "address_id", referencedColumnName = "id")
 	private Address address;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Machine> machines;
 
 	@Column(nullable = false, updatable = false)
 	@CreationTimestamp
