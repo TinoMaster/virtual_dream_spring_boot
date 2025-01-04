@@ -23,6 +23,7 @@ public class BusinessFinalSaleDto {
 	private List<MachineDto> machines;
 	private String note;
 	private List<EmployeeDto> workers;
+	private UserDto doneBy;
 	private Float found;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

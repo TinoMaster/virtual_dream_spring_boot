@@ -58,6 +58,9 @@ public class BusinessFinalSale {
 
 	@OneToMany
 	private List<Employee> workers;
+	
+	@Column(nullable = false)
+	private User doneBy;
 
 	@Column(nullable = false)
 	private Float found;
