@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.tinomaster.virtualdream.virtualDream.dtos.ServiceDto;
 import com.tinomaster.virtualdream.virtualDream.entities.Business;
-import com.tinomaster.virtualdream.virtualDream.entities.Service;
+import com.tinomaster.virtualdream.virtualDream.entities.ServiceEntity;
 import com.tinomaster.virtualdream.virtualDream.repositories.BusinessRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ public class ServiceMapper {
 
 	private final BusinessRepository businessRepository;
 
-	private final Converter<Service, Long> businessToIdConverter = new Converter<Service, Long>() {
+	private final Converter<ServiceEntity, Long> businessToIdConverter = new Converter<ServiceEntity, Long>() {
 		@Override
-		public Long convert(MappingContext<Service, Long> context) {
+		public Long convert(MappingContext<ServiceEntity, Long> context) {
 			return context.getSource().getBusiness() == null ? null : context.getSource().getBusiness().getId();
 		}
 	};
@@ -34,12 +34,12 @@ public class ServiceMapper {
 	};
 
 	public void addMappings(ModelMapper modelMapper) {
-		modelMapper.typeMap(Service.class, ServiceDto.class).addMappings(mapper -> {
-			mapper.using(businessToIdConverter).map(Service::getBusiness, ServiceDto::setBusiness);
+		modelMapper.typeMap(ServiceEntity.class, ServiceDto.class).addMappings(mapper -> {
+			mapper.using(businessToIdConverter).map(ServiceEntity::getBusiness, ServiceDto::setBusiness);
 		});
 
-		modelMapper.typeMap(ServiceDto.class, Service.class).addMappings(mapper -> {
-			mapper.using(idToBusinessConverter).map(ServiceDto::getBusiness, Service::setBusiness);
+		modelMapper.typeMap(ServiceDto.class, ServiceEntity.class).addMappings(mapper -> {
+			mapper.using(idToBusinessConverter).map(ServiceDto::getBusiness, ServiceEntity::setBusiness);
 		});
 	}
 }

@@ -21,6 +21,7 @@ public class ModelMapperConfig {
 	private final MachineMapper machineMapper;
 	private final CardMapper cardMapper;
 	private final ConsumableMapper consumableMapper;
+//	private final ConsumableCostMapper consumableCostMapper;
 
 	@Bean
 	ModelMapper modelMapper() {
@@ -31,6 +32,7 @@ public class ModelMapperConfig {
 		machineMapper.addMappings(modelMapper);
 		cardMapper.addMappings(modelMapper);
 		consumableMapper.addMappings(modelMapper);
+//		consumableCostMapper.addMappings(modelMapper);
 
 		return modelMapper;
 	}
