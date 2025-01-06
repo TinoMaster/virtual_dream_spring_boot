@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ConsumableCostDto {
 	private Long id;
-	private Long consumable;
+	private ConsumableDto consumable;
 	private Float quantity;
 }

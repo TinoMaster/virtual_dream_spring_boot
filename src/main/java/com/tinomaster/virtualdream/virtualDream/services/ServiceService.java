@@ -24,6 +24,7 @@ public class ServiceService {
 	}
 
 	public ServiceEntity saveService(ServiceDto serviceDto) {
+		System.out.println(serviceDto);
 		return serviceRepository.save(mapper.map(serviceDto, ServiceEntity.class));
 	}
 

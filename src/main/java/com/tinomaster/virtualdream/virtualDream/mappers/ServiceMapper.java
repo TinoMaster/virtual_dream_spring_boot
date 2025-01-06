@@ -18,28 +18,30 @@ public class ServiceMapper {
 
 	private final BusinessRepository businessRepository;
 
-	private final Converter<ServiceEntity, Long> businessToIdConverter = new Converter<ServiceEntity, Long>() {
-		@Override
-		public Long convert(MappingContext<ServiceEntity, Long> context) {
-			return context.getSource().getBusiness() == null ? null : context.getSource().getBusiness().getId();
-		}
+	private final Converter<Business, Long> businessToIdConverter = new Converter<Business, Long>() {
+	    @Override
+	    public Long convert(MappingContext<Business, Long> context) {
+	        Business source = context.getSource();
+	        return source == null ? null : source.getId();
+	    }
 	};
 
 	private final Converter<Long, Business> idToBusinessConverter = new Converter<Long, Business>() {
-		@Override
-		public Business convert(MappingContext<Long, Business> context) {
-			Long businessId = context.getSource();
-			return businessId == null ? null : businessRepository.findById(businessId).orElseThrow();
-		}
+	    @Override
+	    public Business convert(MappingContext<Long, Business> context) {
+	        Long source = context.getSource();
+	        return source == null ? null : businessRepository.findById(source).orElseThrow(() ->
+	            new IllegalArgumentException("Business not found for ID: " + source));
+	    }
 	};
-
+	
 	public void addMappings(ModelMapper modelMapper) {
-		modelMapper.typeMap(ServiceEntity.class, ServiceDto.class).addMappings(mapper -> {
-			mapper.using(businessToIdConverter).map(ServiceEntity::getBusiness, ServiceDto::setBusiness);
-		});
+	    modelMapper.typeMap(ServiceEntity.class, ServiceDto.class).addMappings(mapper -> {
+	        mapper.using(businessToIdConverter).map(ServiceEntity::getBusiness, ServiceDto::setBusiness);
+	    });
 
-		modelMapper.typeMap(ServiceDto.class, ServiceEntity.class).addMappings(mapper -> {
-			mapper.using(idToBusinessConverter).map(ServiceDto::getBusiness, ServiceEntity::setBusiness);
-		});
+	    modelMapper.typeMap(ServiceDto.class, ServiceEntity.class).addMappings(mapper -> {
+	        mapper.using(idToBusinessConverter).map(ServiceDto::getBusiness, ServiceEntity::setBusiness);
+	    });
 	}
 }
