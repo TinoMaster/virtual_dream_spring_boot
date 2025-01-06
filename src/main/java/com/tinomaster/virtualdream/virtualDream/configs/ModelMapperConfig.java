@@ -9,6 +9,7 @@ import com.tinomaster.virtualdream.virtualDream.mappers.CardMapper;
 import com.tinomaster.virtualdream.virtualDream.mappers.ConsumableMapper;
 import com.tinomaster.virtualdream.virtualDream.mappers.MachineMapper;
 import com.tinomaster.virtualdream.virtualDream.mappers.ServiceMapper;
+import com.tinomaster.virtualdream.virtualDream.mappers.ServiceSaleMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ public class ModelMapperConfig {
 	private final CardMapper cardMapper;
 	private final ConsumableMapper consumableMapper;
 //	private final ConsumableCostMapper consumableCostMapper;
+	private final ServiceSaleMapper serviceSaleMapper;
 
 	@Bean
 	ModelMapper modelMapper() {
@@ -33,6 +35,7 @@ public class ModelMapperConfig {
 		cardMapper.addMappings(modelMapper);
 		consumableMapper.addMappings(modelMapper);
 //		consumableCostMapper.addMappings(modelMapper);
+		serviceSaleMapper.addMappings(modelMapper);
 
 		return modelMapper;
 	}
