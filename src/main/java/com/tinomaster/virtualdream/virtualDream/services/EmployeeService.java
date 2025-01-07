@@ -54,6 +54,16 @@ public class EmployeeService {
 				.orElseThrow(() -> new RuntimeException("No se ha encontrado un empleado con el id: " + id));
 	}
 
+	public Employee getEmployeeByUserId(Long userId) {
+		Employee employee;
+		try {
+			employee = employeeRepository.findByUserId(userId);
+		} catch (Exception e) {
+			throw new RuntimeException("no se encontro el employee");
+		}
+		return employee;
+	}
+
 	@Transactional
 	public Employee saveEmployee(EmployeeDto employeeDto) {
 		ERole role = employeeDto.getUser().getRole();

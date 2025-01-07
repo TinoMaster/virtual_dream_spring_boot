@@ -57,6 +57,13 @@ public class EmployeeController {
 		return ResponseType.ok("successfullyRequest", employees);
 	}
 
+	@GetMapping("/private/employees/byUserId/{id}")
+	public ResponseEntity<ResponseBody<EmployeeDto>> getEmployeeByUserId(@PathVariable Long id) {
+		System.out.println(id);
+		EmployeeDto employee = mapper.map(employeeService.getEmployeeByUserId(id), EmployeeDto.class);
+		return ResponseType.ok("successfullyRequest", employee);
+	}
+
 	@PostMapping("/admin/employees")
 	public ResponseEntity<ResponseBody<Employee>> saveEmployee(@RequestBody EmployeeDto employeeDto) {
 		return ResponseType.ok("successfullySaved", employeeService.saveEmployee(employeeDto));

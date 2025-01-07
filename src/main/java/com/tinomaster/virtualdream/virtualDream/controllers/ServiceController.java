@@ -34,7 +34,7 @@ public class ServiceController {
 		return mapper.map(service, ServiceDto.class);
 	}
 
-	@GetMapping("/admin/service/list/{id}")
+	@GetMapping("/private/service/list/{id}")
 	public ResponseEntity<ResponseBody<List<ServiceDto>>> getAllServicesByBusinessId(@PathVariable Long id) {
 		var serviceList = StreamSupport.stream(serviceService.getAllServiceByBusinessId(id).spliterator(), false)
 				.toList();

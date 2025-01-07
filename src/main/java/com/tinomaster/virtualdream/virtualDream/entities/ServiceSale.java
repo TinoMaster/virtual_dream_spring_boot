@@ -33,6 +33,10 @@ public class ServiceSale {
 
 	@Column(nullable = false)
 	private Integer quantity;
+	
+	@ManyToOne
+	@JoinColumn(name = "employee_id", referencedColumnName = "id")
+	private Employee employee;
 
 	@ManyToOne
 	@JoinColumn(name = "service_id", referencedColumnName = "id")

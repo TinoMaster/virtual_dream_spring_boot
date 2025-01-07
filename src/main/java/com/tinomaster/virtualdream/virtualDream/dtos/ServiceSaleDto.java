@@ -15,6 +15,7 @@ public class ServiceSaleDto {
 	private Long id;
 	private Integer quantity;
 	private ServiceDto service;
+	private EmployeeDto employee;
 	private Long businessFinalSale;
 	private Long business;
 	private LocalDateTime createdAt;
