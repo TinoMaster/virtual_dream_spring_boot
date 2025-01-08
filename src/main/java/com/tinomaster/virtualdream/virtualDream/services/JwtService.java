@@ -8,16 +8,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.tinomaster.virtualdream.virtualDream.entities.User;
+import com.tinomaster.virtualdream.virtualDream.repositories.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
 	@Value("${application.security.jwt.secret-key}")
@@ -28,6 +35,30 @@ public class JwtService {
 
 	@Value("${application.security.jwt.refresh-token.expiration}")
 	private long refreshExpiration;
+	
+	private final UserRepository userRepository;
+
+	public User getUserAuthenticated() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()) {
+			Object principal = authentication.getPrincipal();
+
+			String username = null;
+
+			if (principal instanceof UserDetails) {
+				username = ((UserDetails) principal).getUsername();
+			} else if (principal instanceof String) {
+				username = (String) principal;
+			}
+
+			if (username != null) {
+				return userRepository.findByEmail(username)
+						.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+			}
+		}
+
+		throw new RuntimeException("No hay usuario authenticado");
+	}
 
 	public String generateToken(UserDetails userDetails) {
 		return generateToken(new HashMap<>(), userDetails);
