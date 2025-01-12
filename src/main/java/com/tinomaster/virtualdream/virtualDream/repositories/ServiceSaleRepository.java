@@ -16,4 +16,6 @@ public interface ServiceSaleRepository extends JpaRepository<ServiceSale, Long> 
 	@Query("SELECT bfs FROM ServiceSale bfs WHERE bfs.business.id = :businessId AND bfs.createdAt BETWEEN :startDate AND :endDate")
 	List<ServiceSale> findByBusinessAndDateRange(@Param("businessId") Long businessId,
 			@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+	List<ServiceSale> findByBusinessFinalSaleIsNullAndCreatedAtBefore(LocalDateTime dateTime);
 }

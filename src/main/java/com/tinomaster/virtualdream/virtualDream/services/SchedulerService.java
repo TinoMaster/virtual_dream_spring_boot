@@ -17,7 +17,7 @@ public class SchedulerService implements CommandLineRunner {
 	 */
 	@Scheduled(cron = "0 0 0 * * ?") // A la medianoche
 	public void programarEliminacionRegistros() {
-		int registrosEliminados = cleanupService.eliminarRegistrosAntiguos();
+		int registrosEliminados = cleanupService.deleteOldServiceSales();
 		System.out.println("Registros eliminados programados: " + registrosEliminados);
 	}
 
@@ -26,7 +26,7 @@ public class SchedulerService implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) {
-		int registrosEliminados = cleanupService.eliminarRegistrosAntiguos();
+		int registrosEliminados = cleanupService.deleteOldServiceSales();
 		System.out.println("Registros eliminados al iniciar: " + registrosEliminados);
 	}
 }

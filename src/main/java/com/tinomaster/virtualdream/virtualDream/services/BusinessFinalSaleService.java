@@ -42,4 +42,8 @@ public class BusinessFinalSaleService {
 
 		return businessFinalSaleRepository.save(businessFinalSale);
 	}
+
+	public boolean existEmployeeInAnyBusinessFinalSale(Long employeeId) {
+		return businessFinalSaleRepository.existEmployeeByEmployeeId(employeeId);
+	}
 }

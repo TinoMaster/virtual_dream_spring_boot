@@ -74,7 +74,12 @@ public class EmployeeService {
 
 		Address address = addressService.saveAddress(employeeDto.getAddress());
 		User user = userService.saveUser(employeeDto.getUser());
-		Employee employee = Employee.builder().phone(employeeDto.getPhone()).dni(employeeDto.getDni()).user(user)
+		Employee employee = Employee.builder()
+				.phone(employeeDto.getPhone())
+				.dni(employeeDto.getDni())
+				.fixedSalary(employeeDto.getFixedSalary())
+				.percentSalary(employeeDto.getPercentSalary())
+				.user(user)
 				.address(address).build();
 
 		return employeeRepository.save(employee);

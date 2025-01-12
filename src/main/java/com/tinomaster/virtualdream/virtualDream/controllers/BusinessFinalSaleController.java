@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tinomaster.virtualdream.virtualDream.dtos.BusinessFinalSaleDto;
 import com.tinomaster.virtualdream.virtualDream.dtos.requests.BusinessFinalSaleByBusinessAndDateDto;
+import com.tinomaster.virtualdream.virtualDream.dtos.response.BooleanResponse;
 import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseBody;
 import com.tinomaster.virtualdream.virtualDream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualDream.entities.BusinessFinalSale;
@@ -44,6 +46,13 @@ public class BusinessFinalSaleController {
 		List<BusinessFinalSaleDto> businessFinalSaleDtoList = businessFinalSaleList.stream().map(this::entityToDto)
 				.collect(Collectors.toList());
 		return ResponseType.ok("successfullyRequest", businessFinalSaleDtoList);
+	}
+
+	@GetMapping("/admin/business-final-sale/exist-employee/{id}")
+	public ResponseEntity<ResponseBody<BooleanResponse>> existEmployeeInAnyBusinessFinalSale(
+			@PathVariable Long employeeId) {
+		boolean response = businessFinalSaleService.existEmployeeInAnyBusinessFinalSale(employeeId);
+		return ResponseType.ok("successfullyRequest", BooleanResponse.builder().response(response).build());
 	}
 
 	@PostMapping("/private/business-final-sale")
