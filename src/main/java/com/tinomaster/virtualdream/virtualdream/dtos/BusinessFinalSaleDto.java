@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class BusinessFinalSaleDto {
-
     private Long id;
     private String name;
     private Long business;
@@ -24,6 +23,7 @@ public class BusinessFinalSaleDto {
     private String note;
     private List<EmployeeDto> workers;
     private List<ServiceSaleDto> servicesSales;
+    private List<CardDto> cards;
     private Long doneBy;
     private Float found;
     private LocalDateTime createdAt;

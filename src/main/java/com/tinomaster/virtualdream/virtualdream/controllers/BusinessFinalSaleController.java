@@ -51,4 +51,11 @@ public class BusinessFinalSaleController {
         businessFinalSaleService.saveBusinessFinalSale(businessFinalSaleDto);
         return ResponseType.ok("successfullySaved", BooleanResponse.builder().response(true).build());
     }
+
+    @DeleteMapping("/private/business-final-sale/{businessFinalSaleId}")
+    public ResponseEntity<ResponseBody<BooleanResponse>> deleteBusinessFinalSale(
+            @PathVariable Long businessFinalSaleId) {
+        businessFinalSaleService.deleteBusinessFinalSale(businessFinalSaleId);
+        return ResponseType.ok("successfullyDeleted", BooleanResponse.builder().response(true).build());
+    }
 }

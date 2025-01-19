@@ -44,6 +44,10 @@ public class BusinessFinalSale {
     @ToString.Exclude
     private List<ServiceSale> servicesSale;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Card> cards;
+
     @OneToMany
     @ToString.Exclude
     private List<Machine> machines;

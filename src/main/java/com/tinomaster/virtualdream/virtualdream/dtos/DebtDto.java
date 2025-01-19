@@ -17,7 +17,7 @@ public class DebtDto {
     private String description;
     private Float total;
     private Float paid;
-    private BusinessFinalSaleDto businessFinalSale;
+    private Long businessFinalSale;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -30,6 +30,7 @@ public class BusinessFinalSaleMapper {
                 .servicesSales(businessFinalSale.getServicesSale().stream().map(serviceSale -> mapper.map(serviceSale, ServiceSaleDto.class)).toList())
                 .doneBy(businessFinalSale.getDoneBy().getId())
                 .found(businessFinalSale.getFound())
+                .cards(businessFinalSale.getCards().stream().map(card -> mapper.map(card, CardDto.class)).toList())
                 .createdAt(businessFinalSale.getCreatedAt())
                 .updatedAt(businessFinalSale.getUpdatedAt())
                 .build();
@@ -52,6 +53,7 @@ public class BusinessFinalSaleMapper {
                 .servicesSale(businessFinalSaleDto.getServicesSales().stream().map(serviceSaleDto -> mapper.map(serviceSaleDto, ServiceSale.class)).toList())
                 .doneBy(user)
                 .found(businessFinalSaleDto.getFound())
+                .cards(businessFinalSaleDto.getCards().stream().map(cardDto -> mapper.map(cardDto, Card.class)).toList())
                 .createdAt(businessFinalSaleDto.getCreatedAt())
                 .updatedAt(businessFinalSaleDto.getUpdatedAt())
                 .build();
