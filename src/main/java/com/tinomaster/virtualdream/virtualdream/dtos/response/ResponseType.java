@@ -31,8 +31,8 @@ public class ResponseType<T> {
         );
     }
 
-    public static  ResponseEntity<ResponseBody<Object>> badRequest(String message, Object data) {
-        return new ResponseEntity<>(ResponseBody.builder()
+    public static <T>  ResponseEntity<ResponseBody<T>> badRequest(String message, T data) {
+        return new ResponseEntity<>(ResponseBody.<T>builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(message)
                 .data(data)

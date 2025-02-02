@@ -43,7 +43,13 @@ public class AuthController {
 
     @PostMapping("/public/authenticate")
     public ResponseEntity<ResponseBody<LoginResponse>> authenticate(@RequestBody AuthLoginDto authLogin) {
-        return ResponseType.ok("successfullyLogin", authService.authenticate(authLogin));
+        LoginResponse authLoginToResponse;
+        try {
+            authLoginToResponse = authService.authenticate(authLogin);
+        } catch (Exception e) {
+            return ResponseType.badRequest(e.getMessage(), null);
+        }
+        return ResponseType.ok("successfullyLogin", authLoginToResponse);
     }
 
     @PostMapping("/refresh-token")
