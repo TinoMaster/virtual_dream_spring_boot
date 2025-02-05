@@ -151,10 +151,10 @@ public class ServiceSaleService {
 	}
 
 	@Transactional
-	public void deleteServiceSale(Long serviceSaleId) {
+	public void deleteServiceSale(Long serviceSaleId, boolean force) {
 		ServiceSale serviceSale = this.findOrThrow(serviceSaleId);
 
-		if (serviceSale.getBusinessFinalSale() != null) {
+		if (!force && serviceSale.getBusinessFinalSale() != null) {
 			throw new RuntimeException(
 					"No es posible eliminar un servicio vendido ya haya sido registrado en un businessFinalSale");
 		}

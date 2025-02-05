@@ -97,7 +97,7 @@ public class BusinessFinalSaleService {
 
         List<ServiceSale> serviceSales = businessFinalSale.getServicesSale();
         for (ServiceSale serviceSale : serviceSales) {
-            serviceSaleService.deleteServiceSale(serviceSale.getId());
+            serviceSaleService.deleteServiceSale(serviceSale.getId(), true);
         }
 
         businessFinalSaleRepository.delete(businessFinalSale);
