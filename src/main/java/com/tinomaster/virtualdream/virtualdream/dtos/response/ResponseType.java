@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseType<T> {
-	private ResponseType() {
+    private ResponseType() {
     }
 
     public static <T> ResponseEntity<ResponseBody<T>> ok(String message, T data) {
@@ -15,7 +15,7 @@ public class ResponseType<T> {
                 .build(), HttpStatus.OK
         );
     }
-    
+
     public static ResponseEntity<ResponseBody<Object>> ok(String message) {
         return new ResponseEntity<>(ResponseBody.builder()
                 .status(HttpStatus.OK.value())
@@ -24,14 +24,7 @@ public class ResponseType<T> {
         );
     }
 
-    public static ResponseEntity<ResponseBody<Object>> noContent() {
-        return new ResponseEntity<>(ResponseBody.builder()
-                .status(HttpStatus.NO_CONTENT.value())
-                .build(), HttpStatus.NO_CONTENT
-        );
-    }
-
-    public static <T>  ResponseEntity<ResponseBody<T>> badRequest(String message, T data) {
+    public static <T> ResponseEntity<ResponseBody<T>> badRequest(String message, T data) {
         return new ResponseEntity<>(ResponseBody.<T>builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(message)
@@ -40,8 +33,8 @@ public class ResponseType<T> {
         );
     }
 
-    public static ResponseEntity<ResponseBody<Object>> notFound(String message, Object data) {
-        return new ResponseEntity<>(ResponseBody.builder()
+    public static <T> ResponseEntity<ResponseBody<T>> notFound(String message, T data) {
+        return new ResponseEntity<>(ResponseBody.<T>builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .message(message)
                 .data(data)
@@ -49,19 +42,12 @@ public class ResponseType<T> {
         );
     }
 
-    public static ResponseEntity<ResponseBody<Object>> internalServerError(String message, Object data) {
-        return new ResponseEntity<>(ResponseBody.builder()
+
+    public static <T> ResponseEntity<ResponseBody<T>> internalServerError(String message, T data) {
+        return new ResponseEntity<>(ResponseBody.<T>builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(message)
                 .data(data)
-                .build(), HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
-
-    public static ResponseEntity<ResponseBody<Object>> internalServerError() {
-        return new ResponseEntity<>(ResponseBody.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .build(), HttpStatus.INTERNAL_SERVER_ERROR
         );
     }

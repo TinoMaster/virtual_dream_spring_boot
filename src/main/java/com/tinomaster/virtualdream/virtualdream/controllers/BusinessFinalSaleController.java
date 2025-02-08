@@ -38,6 +38,26 @@ public class BusinessFinalSaleController {
         return ResponseType.ok("successfullyRequest", businessFinalSaleDtoList);
     }
 
+    @GetMapping("/private/business-final-sale/last/{businessId}")
+    public ResponseEntity<ResponseBody<BusinessFinalSaleDto>> getLastBusinessFinalSale(@PathVariable Long businessId) {
+        if (businessId == null || businessId <= 0) {
+            return ResponseType.badRequest("El id del negocio no es valido", null);
+        }
+
+        try {
+            BusinessFinalSale businessFinalSale = businessFinalSaleService.getLastBusinessFinalSale(businessId);
+
+            if (businessFinalSale == null) {
+                return ResponseType.notFound("No se encontró venta final", null);
+            }
+
+            BusinessFinalSaleDto businessFinalSaleDto = businessFinalSaleMapper.entityToDto(businessFinalSale);
+            return ResponseType.ok("successfullyRequest", businessFinalSaleDto);
+        } catch (Exception e) {
+            return ResponseType.internalServerError("Error inesperado al obtener la venta final: " + e.getMessage(), null);
+        }
+    }
+
     @GetMapping("/admin/business-final-sale/exist-employee/{employeeId}")
     public ResponseEntity<ResponseBody<BooleanResponse>> existEmployeeInAnyBusinessFinalSale(
             @PathVariable Long employeeId) {

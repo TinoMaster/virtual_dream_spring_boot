@@ -108,4 +108,7 @@ public class BusinessFinalSaleService {
         return businessFinalSaleRepository.existEmployeeByEmployeeId(employeeId);
     }
 
+    public BusinessFinalSale getLastBusinessFinalSale(Long businessId) {
+        return businessFinalSaleRepository.getLastBusinessFinalSale(businessId);
+    }
 }
