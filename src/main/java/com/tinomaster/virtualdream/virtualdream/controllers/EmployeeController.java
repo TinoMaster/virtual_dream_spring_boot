@@ -30,7 +30,7 @@ public class EmployeeController {
 
     @GetMapping("/superadmin/employees")
     public ResponseEntity<ResponseBody<List<EmployeeDto>>> getEmployees() {
-        var employeeList = StreamSupport.stream(employeeService.getEmployees().spliterator(), false).toList();
+        var employeeList = employeeService.getEmployees().stream().toList();
         List<EmployeeDto> employees = employeeList.stream().map(this::employeeToEmployeeDto)
                 .collect(Collectors.toList());
         return ResponseType.ok("successfullyRequest", employees);
@@ -44,8 +44,7 @@ public class EmployeeController {
 
     @GetMapping("/admin/employees/byBusiness/{id}")
     public ResponseEntity<ResponseBody<List<EmployeeDto>>> getEmployeesByBusinessId(@PathVariable Long id) {
-        var employeeList = StreamSupport.stream(employeeService.getEmployeesByBusinessId(id).spliterator(), false)
-                .toList();
+        var employeeList = employeeService.getEmployeesByBusinessId(id).stream().toList();
         List<EmployeeDto> employees = employeeList.stream().map(this::employeeToEmployeeDto)
                 .collect(Collectors.toList());
         return ResponseType.ok("successfullyRequest", employees);

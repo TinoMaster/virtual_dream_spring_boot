@@ -33,4 +33,21 @@ public interface BusinessFinalSaleRepository extends JpaRepository<BusinessFinal
             "                     WHERE bfs2.business_id = :businessId)",
             nativeQuery = true)
     BusinessFinalSale getLastBusinessFinalSale(@Param("businessId") Long businessId);
+
+    @Query(value = "SELECT DISTINCT bfs.* " +
+            "FROM business_final_sale bfs " +
+            "JOIN machine m ON m.business_final_sale_id = bfs.id " +
+            "WHERE bfs.business_id = :businessId " +
+            "  AND DATE(bfs.created_at) <> CURDATE() " +
+            "  AND bfs.created_at = ( " +
+            "      SELECT MAX(bfs2.created_at) " +
+            "      FROM business_final_sale bfs2 " +
+            "      JOIN machine m2 ON m2.business_final_sale_id = bfs2.id " +
+            "      WHERE m2.id = m.id " +
+            "        AND DATE(bfs2.created_at) <> CURDATE() " +
+            "        AND bfs2.business_id = :businessId " +
+            "  )",
+            nativeQuery = true)
+    //TODO: Revisar, esta funciones la cree para traer las ventas finales con todas las maquinas
+    List<BusinessFinalSale> getLatestBusinessFinalSalesWithAllMachines(@Param("businessId") Long businessId);
 }
