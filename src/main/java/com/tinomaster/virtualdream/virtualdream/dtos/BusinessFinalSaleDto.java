@@ -25,7 +25,7 @@ public class BusinessFinalSaleDto {
     private List<ServiceSaleDto> servicesSales;
     private List<CardDto> cards;
     private Long doneBy;
-    private Float found;
+    private Float fund;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

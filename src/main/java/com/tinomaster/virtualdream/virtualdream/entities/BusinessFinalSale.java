@@ -63,7 +63,7 @@ public class BusinessFinalSale {
     private User doneBy;
 
     @Column(nullable = false)
-    private Float found;
+    private Float fund;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

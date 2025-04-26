@@ -38,20 +38,20 @@ public class BusinessFinalSaleController {
         return ResponseType.ok("successfullyRequest", businessFinalSaleDtoList);
     }
 
-    @GetMapping("/private/business-final-sale/last/{businessId}")
-    public ResponseEntity<ResponseBody<BusinessFinalSaleDto>> getLastBusinessFinalSale(@PathVariable Long businessId) {
+    @GetMapping("/private/business-final-sale/latest/{businessId}")
+    public ResponseEntity<ResponseBody<List<BusinessFinalSaleDto>>> getLatestBusinessFinalSalesWithAllMachines(@PathVariable Long businessId) {
         if (businessId == null || businessId <= 0) {
             return ResponseType.badRequest("El id del negocio no es valido", null);
         }
 
         try {
-            BusinessFinalSale businessFinalSale = businessFinalSaleService.getLastBusinessFinalSale(businessId);
+            List<BusinessFinalSale> businessesFinalSale = businessFinalSaleService.getLatestBusinessFinalSalesWithAllMachines(businessId);
 
-            if (businessFinalSale == null) {
+            if (businessesFinalSale == null || businessesFinalSale.isEmpty()) {
                 return ResponseType.notFound("No se encontró venta final", null);
             }
 
-            BusinessFinalSaleDto businessFinalSaleDto = businessFinalSaleMapper.entityToDto(businessFinalSale);
+            List<BusinessFinalSaleDto> businessFinalSaleDto = businessesFinalSale.stream().map(businessFinalSaleMapper::entityToDto).toList();
             return ResponseType.ok("successfullyRequest", businessFinalSaleDto);
         } catch (Exception e) {
             return ResponseType.internalServerError("Error inesperado al obtener la venta final: " + e.getMessage(), null);
