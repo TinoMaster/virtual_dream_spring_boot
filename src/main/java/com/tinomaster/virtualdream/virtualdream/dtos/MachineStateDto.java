@@ -5,13 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MachineDto {
+public class MachineStateDto {
     private Long id;
-    private String name;
-    private Long business;
-    private boolean active;
+    private Long BusinessFinalSaleId;
+    private MachineDto machine;
+    private Float fund;
+    private LocalDateTime date;
 }

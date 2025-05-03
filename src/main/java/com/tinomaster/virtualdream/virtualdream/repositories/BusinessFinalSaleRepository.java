@@ -1,6 +1,7 @@
 package com.tinomaster.virtualdream.virtualdream.repositories;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,6 +49,6 @@ public interface BusinessFinalSaleRepository extends JpaRepository<BusinessFinal
             "        AND bfs2.business_id = :businessId " +
             "  )",
             nativeQuery = true)
-    //TODO: Revisar, esta funciones la cree para traer las ventas finales con todas las maquinas
+        //TODO: Revisar, esta funciones la cree para traer las ventas finales con todas las maquinas
     List<BusinessFinalSale> getLatestBusinessFinalSalesWithAllMachines(@Param("businessId") Long businessId);
 }

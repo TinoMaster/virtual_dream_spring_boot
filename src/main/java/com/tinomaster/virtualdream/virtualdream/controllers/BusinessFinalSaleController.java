@@ -68,8 +68,12 @@ public class BusinessFinalSaleController {
     @PostMapping("/private/business-final-sale")
     public ResponseEntity<ResponseBody<BooleanResponse>> saveBusinessFinalSale(
             @RequestBody BusinessFinalSaleDto businessFinalSaleDto) {
-        businessFinalSaleService.saveBusinessFinalSale(businessFinalSaleDto);
-        return ResponseType.ok("successfullySaved", BooleanResponse.builder().response(true).build());
+        try {
+            businessFinalSaleService.saveBusinessFinalSale(businessFinalSaleDto);
+            return ResponseType.ok("successfullySaved", BooleanResponse.builder().response(true).build());
+        } catch (Exception e) {
+            return ResponseType.internalServerError("Error inesperado al guardar la venta final: " + e.getMessage(), null);
+        }
     }
 
     @DeleteMapping("/admin/business-final-sale/{businessFinalSaleId}")

@@ -24,6 +24,7 @@ public class BusinessFinalSaleDto {
     private List<EmployeeDto> workers;
     private List<ServiceSaleDto> servicesSales;
     private List<CardDto> cards;
+    private List<MachineStateDto> machineStates;
     private Long doneBy;
     private Float fund;
     private LocalDateTime createdAt;

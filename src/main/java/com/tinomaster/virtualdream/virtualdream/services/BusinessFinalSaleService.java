@@ -1,10 +1,8 @@
 package com.tinomaster.virtualdream.virtualdream.services;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.BusinessFinalSaleDto;
-import com.tinomaster.virtualdream.virtualdream.entities.BusinessFinalSale;
-import com.tinomaster.virtualdream.virtualdream.entities.Card;
-import com.tinomaster.virtualdream.virtualdream.entities.Debt;
-import com.tinomaster.virtualdream.virtualdream.entities.ServiceSale;
+import com.tinomaster.virtualdream.virtualdream.dtos.MachineStateDto;
+import com.tinomaster.virtualdream.virtualdream.entities.*;
 import com.tinomaster.virtualdream.virtualdream.mappers.BusinessFinalSaleMapper;
 import com.tinomaster.virtualdream.virtualdream.repositories.BusinessFinalSaleRepository;
 import com.tinomaster.virtualdream.virtualdream.repositories.CardRepository;
@@ -28,6 +26,7 @@ public class BusinessFinalSaleService {
     private final ServiceSaleRepository serviceSaleRepository;
     private final CardRepository cardRepository;
     private final BusinessFinalSaleMapper businessFinalSaleMapper;
+    private final MachineStateService machineStateService;
 
     private final ServiceSaleService serviceSaleService;
 
@@ -84,6 +83,12 @@ public class BusinessFinalSaleService {
                 debtRepository.save(debt);
             }
 
+            // salvamos las machineState
+            for (MachineStateDto machineStateDto : businessFinalSaleDto.getMachineStates()) {
+                machineStateDto.setBusinessFinalSaleId(savedBusinessFinalSale.getId());
+                machineStateService.createMachineState(machineStateDto);
+            }
+
         } catch (Exception e) {
             Log.info("Error al guardar venta final: " + businessFinalSaleDto);
             throw e;
@@ -96,13 +101,17 @@ public class BusinessFinalSaleService {
         BusinessFinalSale businessFinalSale = businessFinalSaleRepository.findById(businessFinalSaleId).orElseThrow();
 
         List<ServiceSale> serviceSales = businessFinalSale.getServicesSale();
+        List<MachineStateDto> machineStateList = machineStateService.getMachineStatesByFinalSaleId(businessFinalSaleId);
         for (ServiceSale serviceSale : serviceSales) {
             serviceSaleService.deleteServiceSale(serviceSale.getId(), true);
         }
 
+        for (MachineStateDto machineStateDto : machineStateList) {
+            machineStateService.deleteMachineState(machineStateDto.getId());
+        }
+
         businessFinalSaleRepository.delete(businessFinalSale);
     }
-
 
     public boolean existEmployeeInAnyBusinessFinalSale(Long employeeId) {
         return businessFinalSaleRepository.existEmployeeByEmployeeId(employeeId);
