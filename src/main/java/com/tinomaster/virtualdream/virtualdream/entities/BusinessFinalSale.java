@@ -48,6 +48,17 @@ public class BusinessFinalSale {
     @ToString.Exclude
     private List<Card> cards;
 
+    //TODO: Ver aqui motivo por el cual no me deja salvar un business final sale si existe otro por las maquinas
+    // problema que seguramente se expande a los demas campos seteados de la misma manera
+//    @ManyToMany // <--- Change to ManyToMany
+//    @JoinTable( // Optional but good practice: Define join table details
+//            name = "business_final_sale_machines",
+//            joinColumns = @JoinColumn(name = "business_final_sale_id"),
+//            inverseJoinColumns = @JoinColumn(name = "machine_id")
+//    )
+//    @ToString.Exclude
+//    private List<Machine> machines;
+
     @OneToMany
     @ToString.Exclude
     private List<Machine> machines;

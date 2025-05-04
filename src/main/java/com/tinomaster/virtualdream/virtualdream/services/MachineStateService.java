@@ -114,4 +114,16 @@ public class MachineStateService {
                 .map(machineStateMapper::entityToDto)
                 .collect(Collectors.toList());
     }
+
+    // Método para obtener los últimos estados de máquina para un Business ID antes o en una fecha específica
+    @Transactional(readOnly = true)
+    public List<MachineStateDto> getLatestMachineStatesByBusinessBeforeDate(Long businessId, LocalDate targetDate) {
+        // Convertimos LocalDate al final del día para asegurar que incluimos todo el día en la comparación <=
+        LocalDateTime targetDateTime = targetDate.atTime(java.time.LocalTime.MAX);
+        List<MachineState> states = machineStateRepository.findLatestStatesByBusinessIdBeforeDate(businessId, targetDateTime);
+        return states.stream()
+                .map(machineStateMapper::entityToDto)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -94,4 +94,13 @@ public class MachineStateController {
         List<MachineStateDto> dtos = machineStateService.getMachineStatesByBusinessAndDate(businessId, date);
         return ResponseType.ok("successfullyFetched", dtos);
     }
+
+    @GetMapping("/private/machine-state/latest-by-business/{businessId}")
+    public ResponseEntity<ResponseBody<List<MachineStateDto>>> getLatestStatesByBusinessBeforeDate(
+            @PathVariable Long businessId) {
+        // Obtener la fecha actual
+        LocalDate targetDate = LocalDate.now(); 
+        List<MachineStateDto> dtos = machineStateService.getLatestMachineStatesByBusinessBeforeDate(businessId, targetDate);
+        return ResponseType.ok("successfullyFetchedLatest", dtos);
+    }
 }

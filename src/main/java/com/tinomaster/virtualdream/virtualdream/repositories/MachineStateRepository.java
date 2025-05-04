@@ -41,4 +41,8 @@ public interface MachineStateRepository extends JpaRepository<MachineState, Long
     @Query("SELECT ms FROM MachineState ms JOIN ms.businessFinalSale bfs WHERE bfs.business.id = :businessId AND ms.date >= :startOfDay AND ms.date < :endOfDay")
     List<MachineState> findByBusinessIdAndDate(@Param("businessId") Long businessId, @Param("startOfDay") LocalDateTime startOfDay, @Param("endOfDay") LocalDateTime endOfDay);
 
+    // EXTRA 3: Buscar el último estado de CADA máquina para un Business ID antes o en una fecha específica
+    @Query("SELECT ms FROM MachineState ms JOIN ms.businessFinalSale bfs WHERE bfs.business.id = :businessId AND ms.date <= :targetDate AND ms.date = (SELECT MAX(subMs.date) FROM MachineState subMs JOIN subMs.businessFinalSale subBfs WHERE subMs.machine.id = ms.machine.id AND subBfs.business.id = :businessId AND subMs.date <= :targetDate)")
+    List<MachineState> findLatestStatesByBusinessIdBeforeDate(@Param("businessId") Long businessId, @Param("targetDate") LocalDateTime targetDate);
+
 }
