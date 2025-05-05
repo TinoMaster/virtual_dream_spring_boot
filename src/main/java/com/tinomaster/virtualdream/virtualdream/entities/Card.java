@@ -17,7 +17,7 @@ public class Card {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String number;
 
     @ManyToOne

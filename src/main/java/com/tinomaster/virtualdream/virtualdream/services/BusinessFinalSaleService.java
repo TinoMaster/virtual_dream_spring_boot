@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Service
@@ -39,6 +41,23 @@ public class BusinessFinalSaleService {
         LocalDateTime adjustStartDate = startDate.toLocalDate().atStartOfDay();
         LocalDateTime adjustEndDate = endDate.toLocalDate().atTime(LocalTime.MAX);
         return businessFinalSaleRepository.findByBusinessAndDateRange(businessId, adjustStartDate, adjustEndDate);
+    }
+
+    public List<BusinessFinalSale> getBusinessFinalSalesByMonth(Long businessId, int year, int month) {
+        // Asegurarse de que el mes es válido (1-12)
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("El mes debe estar entre 1 y 12.");
+        }
+
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
+        // Usamos TemporalAdjusters.lastDayOfMonth() para obtener el último día del mes
+        LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(LocalTime.MAX);
+
+        Log.info("Buscando ventas para Business ID: " + businessId + " en el mes " + month + "/" + year +
+                " (Desde: " + startDate + " Hasta: " + endDate + ")");
+
+        return businessFinalSaleRepository.findByBusinessAndDateRange(businessId, startDate, endDate);
     }
 
     @Transactional
