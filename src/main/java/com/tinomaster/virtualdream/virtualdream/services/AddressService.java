@@ -13,15 +13,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AddressService {
 
-	private final AddressRepository addressRepository;
-	private final ModelMapper modelMapper;
+    private final AddressRepository addressRepository;
+    private final ModelMapper modelMapper;
 
-	public Address saveAddress(AddressDto addressDto) {
-		return addressRepository.save(modelMapper.map(addressDto, Address.class));
-	}
+    public AddressDto saveAddress(AddressDto addressDto) {
+        Address address = addressRepository.save(modelMapper.map(addressDto, Address.class));
+        return modelMapper.map(address, AddressDto.class);
+    }
 
-	public void deleteById(Long id) {
-		addressRepository.deleteById(id);
-	}
+    public void deleteById(Long id) {
+        addressRepository.deleteById(id);
+    }
 
 }

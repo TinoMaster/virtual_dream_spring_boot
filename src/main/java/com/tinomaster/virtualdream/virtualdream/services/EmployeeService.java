@@ -2,6 +2,7 @@ package com.tinomaster.virtualdream.virtualdream.services;
 
 import java.util.List;
 
+import com.tinomaster.virtualdream.virtualdream.dtos.AddressDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,8 @@ public class EmployeeService {
             throw new InvalidRoleException("El rol proporcionado no es válido para registrar un empleado.");
         }
 
-        Address address = addressService.saveAddress(employeeDto.getAddress());
+        AddressDto addressDto = addressService.saveAddress(employeeDto.getAddress());
+        Address address = mapper.map(addressDto, Address.class);
         User user = userService.saveUser(employeeDto.getUser());
         Employee employee = Employee.builder()
                 .phone(employeeDto.getPhone())
@@ -90,7 +92,8 @@ public class EmployeeService {
         Employee employee = employeeRepository.findById(employeeDto.getId())
                 .orElseThrow(() -> new RuntimeException("No se ha encontrado un empleado con el id: " + employeeDto.getId()));
 
-        Address address = addressService.saveAddress(employeeDto.getAddress());
+        AddressDto addressDto = addressService.saveAddress(employeeDto.getAddress());
+        Address address = mapper.map(addressDto, Address.class);
         User user = userService.saveUser(employeeDto.getUser());
 
         employee.setPhone(employeeDto.getPhone());
