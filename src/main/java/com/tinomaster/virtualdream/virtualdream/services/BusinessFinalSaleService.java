@@ -132,6 +132,7 @@ public class BusinessFinalSaleService {
         businessFinalSaleRepository.delete(businessFinalSale);
     }
 
+
     public boolean existEmployeeInAnyBusinessFinalSale(Long employeeId) {
         return businessFinalSaleRepository.existEmployeeByEmployeeId(employeeId);
     }

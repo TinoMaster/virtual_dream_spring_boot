@@ -26,6 +26,7 @@ public class EmployeeService {
 
     private final AddressService addressService;
     private final UserService userService;
+    private final BusinessFinalSaleService businessFinalSaleService;
 
     private final EmployeeRepository employeeRepository;
     private final BusinessRepository businessRepository;
@@ -73,18 +74,21 @@ public class EmployeeService {
             throw new InvalidRoleException("El rol proporcionado no es válido para registrar un empleado.");
         }
 
-        AddressDto addressDto = addressService.saveAddress(employeeDto.getAddress());
-        Address address = mapper.map(addressDto, Address.class);
-        User user = userService.saveUser(employeeDto.getUser());
-        Employee employee = Employee.builder()
-                .phone(employeeDto.getPhone())
-                .dni(employeeDto.getDni())
-                .fixedSalary(employeeDto.getFixedSalary())
-                .percentSalary(employeeDto.getPercentSalary())
-                .user(user)
-                .address(address).build();
+        try {
+            Address address = addressService.saveAddress(employeeDto.getAddress());
+            User user = userService.saveUser(employeeDto.getUser());
+            Employee employee = Employee.builder()
+                    .phone(employeeDto.getPhone())
+                    .dni(employeeDto.getDni())
+                    .fixedSalary(employeeDto.getFixedSalary())
+                    .percentSalary(employeeDto.getPercentSalary())
+                    .user(user)
+                    .address(address).build();
 
-        return employeeRepository.save(employee);
+            return employeeRepository.save(employee);
+        } catch (Exception e) {
+            throw new RuntimeException("Ah ocurrido un error salvando el empleado" + e.getMessage());
+        }
     }
 
     @Transactional
@@ -92,8 +96,7 @@ public class EmployeeService {
         Employee employee = employeeRepository.findById(employeeDto.getId())
                 .orElseThrow(() -> new RuntimeException("No se ha encontrado un empleado con el id: " + employeeDto.getId()));
 
-        AddressDto addressDto = addressService.saveAddress(employeeDto.getAddress());
-        Address address = mapper.map(addressDto, Address.class);
+        Address address = addressService.saveAddress(employeeDto.getAddress());
         User user = userService.saveUser(employeeDto.getUser());
 
         employee.setPhone(employeeDto.getPhone());
@@ -110,8 +113,12 @@ public class EmployeeService {
     public void deleteEmployee(Long id) {
         Employee employee = this.findOrThrow(id);
 
-        User user = employee.getUser();
+        boolean existEmployeeInAnyBusinessFinalSale = businessFinalSaleService.existEmployeeInAnyBusinessFinalSale(employee.getId());
+        if (existEmployeeInAnyBusinessFinalSale) {
+            throw new RuntimeException("No se puede eliminar el empleado porque tiene ventas asociadas");
+        }
 
+        User user = employee.getUser();
         List<Business> businesses = user.getBusinesses();
 
         if (!businesses.isEmpty()) {

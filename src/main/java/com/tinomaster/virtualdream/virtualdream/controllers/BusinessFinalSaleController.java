@@ -48,9 +48,6 @@ public class BusinessFinalSaleController {
         int year = requestDto.getYear();
         int month = requestDto.getMonth();
 
-        Log.info("year: " + year);
-        Log.info("month: " + month);
-
         if (businessId == null || businessId <= 0) {
             return ResponseType.badRequest("El ID del negocio no es válido", null);
         }

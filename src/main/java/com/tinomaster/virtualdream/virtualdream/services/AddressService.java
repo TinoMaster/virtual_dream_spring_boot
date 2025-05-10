@@ -16,9 +16,9 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final ModelMapper modelMapper;
 
-    public AddressDto saveAddress(AddressDto addressDto) {
+    public Address saveAddress(AddressDto addressDto) {
         Address address = addressRepository.save(modelMapper.map(addressDto, Address.class));
-        return modelMapper.map(address, AddressDto.class);
+        return address;
     }
 
     public void deleteById(Long id) {

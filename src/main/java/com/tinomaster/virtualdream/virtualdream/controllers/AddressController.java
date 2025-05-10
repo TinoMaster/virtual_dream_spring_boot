@@ -6,6 +6,7 @@ import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualdream.services.AddressService;
 import com.tinomaster.virtualdream.virtualdream.utils.Log;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AddressController {
 
     private final AddressService addressService;
+    private final ModelMapper mapper;
 
     @PostMapping("/admin/address")
     public ResponseEntity<ResponseBody<AddressDto>> saveAddress(@RequestBody AddressDto address) {
-        Log.info("Saving address: " + address);
-        return ResponseType.ok("successfullySaved", addressService.saveAddress(address));
+        AddressDto addressDto = mapper.map(addressService.saveAddress(address), AddressDto.class);
+        return ResponseType.ok("successfullySaved", addressDto);
     }
 }

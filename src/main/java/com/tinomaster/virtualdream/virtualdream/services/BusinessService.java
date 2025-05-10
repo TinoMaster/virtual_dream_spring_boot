@@ -55,8 +55,7 @@ public class BusinessService {
 
     @Transactional
     public Business saveBusiness(BusinessDto businessDto) {
-        AddressDto addressDto = addressService.saveAddress(businessDto.getAddress());
-        Address address = mapper.map(addressDto, Address.class);
+        Address address = addressService.saveAddress(businessDto.getAddress());
 
         User user = userRepository.findById(businessDto.getOwner()).orElseThrow(
                 () -> new RuntimeException("No se encuentra el user con el id: " + businessDto.getOwner()));

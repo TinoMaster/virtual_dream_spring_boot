@@ -64,8 +64,15 @@ public class EmployeeController {
     }
 
     @PostMapping("/admin/employees")
-    public ResponseEntity<ResponseBody<Employee>> saveEmployee(@RequestBody EmployeeDto employeeDto) {
-        return ResponseType.ok("successfullySaved", employeeService.saveEmployee(employeeDto));
+    public ResponseEntity<ResponseBody<EmployeeDto>> saveEmployee(@RequestBody EmployeeDto employeeDto) {
+        try {
+            Employee employee = employeeService.saveEmployee(employeeDto);
+            return ResponseType.ok("successfullySaved", mapper.map(employee, EmployeeDto.class));
+        } catch (IllegalArgumentException e) {
+            return ResponseType.badRequest(e.getMessage(), null);
+        } catch (Exception e) {
+            return ResponseType.internalServerError("Error inesperado al guardar el empleado: " + e.getMessage(), null);
+        }
     }
 
     @DeleteMapping("/admin/employees/{id}")
