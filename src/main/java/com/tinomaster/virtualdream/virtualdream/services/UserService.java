@@ -33,6 +33,10 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User by id " + id + " not found"));
     }
 
+    public boolean existAnyUser() {
+        return !userRepository.findAll().isEmpty();
+    }
+
     @Transactional
     public User saveUser(UserDto userDto) {
         User user = mapper.map(userDto, User.class);

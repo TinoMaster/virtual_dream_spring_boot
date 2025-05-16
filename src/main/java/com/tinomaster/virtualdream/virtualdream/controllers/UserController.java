@@ -1,6 +1,7 @@
 package com.tinomaster.virtualdream.virtualdream.controllers;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.UserDto;
+import com.tinomaster.virtualdream.virtualdream.dtos.response.BooleanResponse;
 import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseBody;
 import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualdream.entities.User;
@@ -20,71 +21,77 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/api/v1")
 public class UserController {
 
-	private final UserService userService;
-	private final ModelMapper mapper;
+    private final UserService userService;
+    private final ModelMapper mapper;
 
-	private UserDto userToUserDto(User user) {
-		return mapper.map(user, UserDto.class);
-	}
+    private UserDto userToUserDto(User user) {
+        return mapper.map(user, UserDto.class);
+    }
 
-	private User userDtoToUser(UserDto userDto) {
-		return mapper.map(userDto, User.class);
-	}
+    private User userDtoToUser(UserDto userDto) {
+        return mapper.map(userDto, User.class);
+    }
 
-	@GetMapping("/superadmin/users")
-	public ResponseEntity<ResponseBody<List<UserDto>>> getAllUsers() {
-		var usersList = StreamSupport.stream(userService.getAllUsers().spliterator(), false).toList();
-		List<UserDto> users = usersList.stream().map(this::userToUserDto).collect(Collectors.toList());
-		return ResponseType.ok("successfullyRequest", users);
-	}
+    @GetMapping("/superadmin/users")
+    public ResponseEntity<ResponseBody<List<UserDto>>> getAllUsers() {
+        var usersList = StreamSupport.stream(userService.getAllUsers().spliterator(), false).toList();
+        List<UserDto> users = usersList.stream().map(this::userToUserDto).collect(Collectors.toList());
+        return ResponseType.ok("successfullyRequest", users);
+    }
 
-	@GetMapping("/private/users/{id}")
-	public ResponseEntity<ResponseBody<UserDto>> getUserById(@PathVariable Long id) {
-		UserDto user = this.userToUserDto(userService.getUserById(id));
-		return ResponseType.ok("successfullyRequest", user);
-	}
-	
-	@GetMapping("/private/users/byEmail/{email}")
-	public ResponseEntity<ResponseBody<UserDto>> getUserByEmail(@PathVariable String email) {
-		UserDto user = this.userToUserDto(userService.getUserByEmail(email));
-		return ResponseType.ok("successfullyRequest", user);
-	}
+    @GetMapping("/public/users/exist")
+    public ResponseEntity<ResponseBody<BooleanResponse>> existAnyUser() {
+        boolean exist = userService.existAnyUser();
+        return ResponseType.ok("successfullyRequest", BooleanResponse.builder().response(exist).build());
+    }
 
-	@GetMapping("/superadmin/auth-requests")
-	public ResponseEntity<ResponseBody<List<UserDto>>> getUnauthorizedRequests() {
-		var userList = StreamSupport.stream(userService.getUnauthorizedUsers().spliterator(), false).toList();
-		List<UserDto> users = userList.stream().map(this::userToUserDto).collect(Collectors.toList());
-		return ResponseType.ok("successfullyRequest", users);
-	}
+    @GetMapping("/private/users/{id}")
+    public ResponseEntity<ResponseBody<UserDto>> getUserById(@PathVariable Long id) {
+        UserDto user = this.userToUserDto(userService.getUserById(id));
+        return ResponseType.ok("successfullyRequest", user);
+    }
 
-	@PutMapping("/superadmin/auth-requests/{id}")
-	public ResponseEntity<ResponseBody<Object>> activeUser(@PathVariable Long id) {
-		userService.activeUser(id);
-		return ResponseType.ok("successfullyActivated");
-	}
+    @GetMapping("/private/users/byEmail/{email}")
+    public ResponseEntity<ResponseBody<UserDto>> getUserByEmail(@PathVariable String email) {
+        UserDto user = this.userToUserDto(userService.getUserByEmail(email));
+        return ResponseType.ok("successfullyRequest", user);
+    }
 
-	@DeleteMapping("/superadmin/auth-requests/{id}")
-	public ResponseEntity<ResponseBody<Object>> denyUser(@PathVariable Long id) {
-		userService.denyUser(id);
-		return ResponseType.ok("susccessfullyDeny");
-	}
+    @GetMapping("/superadmin/auth-requests")
+    public ResponseEntity<ResponseBody<List<UserDto>>> getUnauthorizedRequests() {
+        var userList = StreamSupport.stream(userService.getUnauthorizedUsers().spliterator(), false).toList();
+        List<UserDto> users = userList.stream().map(this::userToUserDto).collect(Collectors.toList());
+        return ResponseType.ok("successfullyRequest", users);
+    }
 
-	@PostMapping
-	public UserDto saveUser(@RequestBody UserDto userDto) {
-		return userToUserDto(userService.saveUser(userDtoToUser(userDto)));
-	}
+    @PutMapping("/superadmin/auth-requests/{id}")
+    public ResponseEntity<ResponseBody<Object>> activeUser(@PathVariable Long id) {
+        userService.activeUser(id);
+        return ResponseType.ok("successfullyActivated");
+    }
 
-	@PutMapping("/{id}")
-	public void updateUser(@PathVariable long id, @RequestBody UserDto userDto) {
-		if (id != userDto.getId()) {
-			throw new NotFoundException("User with id " + id + " not found");
-		}
+    @DeleteMapping("/superadmin/auth-requests/{id}")
+    public ResponseEntity<ResponseBody<Object>> denyUser(@PathVariable Long id) {
+        userService.denyUser(id);
+        return ResponseType.ok("susccessfullyDeny");
+    }
 
-		userService.updateUser(id, userDtoToUser(userDto));
-	}
+    @PostMapping
+    public UserDto saveUser(@RequestBody UserDto userDto) {
+        return userToUserDto(userService.saveUser(userDtoToUser(userDto)));
+    }
 
-	@DeleteMapping("/{id}")
-	public void removeUser(@PathVariable Long id) {
-		userService.removeUser(id);
-	}
+    @PutMapping("/{id}")
+    public void updateUser(@PathVariable long id, @RequestBody UserDto userDto) {
+        if (id != userDto.getId()) {
+            throw new NotFoundException("User with id " + id + " not found");
+        }
+
+        userService.updateUser(id, userDtoToUser(userDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public void removeUser(@PathVariable Long id) {
+        userService.removeUser(id);
+    }
 }

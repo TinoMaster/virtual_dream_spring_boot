@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tinomaster.virtualdream.virtualdream.dtos.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,11 +17,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinomaster.virtualdream.virtualdream.dtos.AuthLoginDto;
-import com.tinomaster.virtualdream.virtualdream.dtos.AuthRegisterDto;
-import com.tinomaster.virtualdream.virtualdream.dtos.BusinessDto;
-import com.tinomaster.virtualdream.virtualdream.dtos.EmailDto;
-import com.tinomaster.virtualdream.virtualdream.dtos.UserDto;
 import com.tinomaster.virtualdream.virtualdream.dtos.response.AuthOwnerRegisterResponse;
 import com.tinomaster.virtualdream.virtualdream.dtos.response.LoginResponse;
 import com.tinomaster.virtualdream.virtualdream.entities.Address;
@@ -50,17 +46,21 @@ public class AuthenticationService {
     private final AddressRepository addressRepository;
     private final ModelMapper modelMapper;
 
-    public LoginResponse registerAdmin(UserDto userDto) {
-        if (userDto.getRole() != ERole.SUPERADMIN) {
+    public LoginResponse registerAdmin(SuperAdminDto superAdminDto) {
+        User existingUser = userRepository.findSuperAdmin();
+        if (superAdminDto.getRole() != ERole.SUPERADMIN && existingUser != null) {
             throw new InvalidRoleException("El rol proporcionado no es valido para registrar");
         }
 
-        User user = modelMapper.map(userDto, User.class);
-
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setActive(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+        User user = User.builder()
+                .name(superAdminDto.getName())
+                .email(superAdminDto.getEmail())
+                .role(superAdminDto.getRole())
+                .password(passwordEncoder.encode(superAdminDto.getPassword()))
+                .active(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         userRepository.save(user);
 

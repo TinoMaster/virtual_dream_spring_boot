@@ -75,6 +75,12 @@ public class BusinessFinalSale {
     @Column(nullable = false)
     private Float fund;
 
+    @Column()
+    private Float percentSalary;
+
+    @Column()
+    private Integer fixedSalary;
+
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;

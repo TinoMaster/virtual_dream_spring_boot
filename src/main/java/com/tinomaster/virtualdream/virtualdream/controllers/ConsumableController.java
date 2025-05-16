@@ -27,31 +27,35 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConsumableController {
 
-	private final ConsumableService consumableService;
-	private final ModelMapper mapper;
+    private final ConsumableService consumableService;
+    private final ModelMapper mapper;
 
-	private ConsumableDto consumableToConsumableDto(Consumable consumable) {
-		return mapper.map(consumable, ConsumableDto.class);
-	}
+    private ConsumableDto consumableToConsumableDto(Consumable consumable) {
+        return mapper.map(consumable, ConsumableDto.class);
+    }
 
-	@GetMapping("/admin/consumable/list/{id}")
-	public ResponseEntity<ResponseBody<List<ConsumableDto>>> getAllByBusinessId(@PathVariable Long id) {
-		var consumableList = StreamSupport.stream(consumableService.getConsumablesByBusinessId(id).spliterator(), false)
-				.toList();
-		List<ConsumableDto> consumables = consumableList.stream().map(this::consumableToConsumableDto)
-				.collect(Collectors.toList());
-		return ResponseType.ok("successfullyRequest", consumables);
-	}
+    @GetMapping("/admin/consumable/list/{id}")
+    public ResponseEntity<ResponseBody<List<ConsumableDto>>> getAllByBusinessId(@PathVariable Long id) {
+        var consumableList = StreamSupport.stream(consumableService.getConsumablesByBusinessId(id).spliterator(), false)
+                .toList();
+        List<ConsumableDto> consumables = consumableList.stream().map(this::consumableToConsumableDto)
+                .collect(Collectors.toList());
+        return ResponseType.ok("successfullyRequest", consumables);
+    }
 
-	@PostMapping("/admin/consumable")
-	public ResponseEntity<ResponseBody<ConsumableDto>> saveConsumable(@RequestBody ConsumableDto consumableDto) {
-		Consumable consumableSaved = consumableService.saveConsumable(consumableDto);
-		return ResponseType.ok("successfullySaved", mapper.map(consumableSaved, ConsumableDto.class));
-	}
+    @PostMapping("/admin/consumable")
+    public ResponseEntity<ResponseBody<ConsumableDto>> saveConsumable(@RequestBody ConsumableDto consumableDto) {
+        try {
+            Consumable consumableSaved = consumableService.saveConsumable(consumableDto);
+            return ResponseType.ok("successfullySaved", mapper.map(consumableSaved, ConsumableDto.class));
+        } catch (Exception e) {
+            return ResponseType.internalServerError(e.getMessage(), null);
+        }
+    }
 
-	@DeleteMapping("/admin/consumable/{id}")
-	public ResponseEntity<ResponseBody<Object>> deleteConsumable(@PathVariable Long id) {
-		consumableService.deleteConsumable(id);
-		return ResponseType.ok("successfullyDeleted");
-	}
+    @DeleteMapping("/admin/consumable/{id}")
+    public ResponseEntity<ResponseBody<Object>> deleteConsumable(@PathVariable Long id) {
+        consumableService.deleteConsumable(id);
+        return ResponseType.ok("successfullyDeleted");
+    }
 }

@@ -27,6 +27,8 @@ public class BusinessFinalSaleDto {
     private List<MachineStateDto> machineStates;
     private Long doneBy;
     private Float fund;
+    private Float percentSalary;
+    private Integer fixedSalary;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

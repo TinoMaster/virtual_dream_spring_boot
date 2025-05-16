@@ -67,6 +67,20 @@ public class BusinessService {
         return businessRepository.save(business);
     }
 
+    public Business updateBusiness(Long businessId, BusinessDto businessDto) {
+        Business business = findOrThrow(businessId);
+
+        try {
+            business.setName(businessDto.getName());
+            business.setPhone(businessDto.getPhone());
+            business.setDescription(businessDto.getDescription());
+            business.setUpdatedAt(LocalDateTime.now());
+            return businessRepository.save(business);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar el negocio", e);
+        }
+    }
+
     @Transactional
     public void deleteBusiness(Long businessId) {
         Business business = businessRepository.findById(businessId)

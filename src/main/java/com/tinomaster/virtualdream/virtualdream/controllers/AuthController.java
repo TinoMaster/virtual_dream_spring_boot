@@ -2,6 +2,7 @@ package com.tinomaster.virtualdream.virtualdream.controllers;
 
 import java.io.IOException;
 
+import com.tinomaster.virtualdream.virtualdream.dtos.SuperAdminDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +37,14 @@ public class AuthController {
         return ResponseType.ok("successfullyRegister", authService.registerOwner(authRegister));
     }
 
-    @PostMapping("/public/register/admin")
-    public ResponseEntity<ResponseBody<LoginResponse>> registerAdmin(@RequestBody UserDto userDto) {
-        return ResponseType.ok("successfullyRegister", authService.registerAdmin(userDto));
+    @PostMapping("/public/register/superadmin")
+    public ResponseEntity<ResponseBody<LoginResponse>> registerAdmin(@RequestBody SuperAdminDto superAdminDto) {
+        try {
+            return ResponseType.ok("successfullyRegister", authService.registerAdmin(superAdminDto));
+        } catch (Exception e) {
+            return ResponseType.badRequest(e.getMessage(), null);
+        }
+
     }
 
     @PostMapping("/public/authenticate")
