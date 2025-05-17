@@ -28,33 +28,40 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServiceEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
+    private Long id;
 
-	@Column(nullable = false)
-	private String name;
+    @ManyToOne
+    @JoinColumn(name = "service_key_id", referencedColumnName = "id")
+    private ServiceKey serviceKey;
 
-	@Column(nullable = true)
-	private String description;
+    @Column(nullable = false)
+    private String name;
 
-	@Column(nullable = false)
-	private Float price;
+    @Column(nullable = true)
+    private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "business_id", referencedColumnName = "id")
-	private Business business;
+    @Column(nullable = false)
+    private Float price;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "service_id")
-	private List<ConsumableCost> costs;
+    @ManyToOne
+    @JoinColumn(name = "business_id", referencedColumnName = "id")
+    private Business business;
 
-	@Column(nullable = false, updatable = false, unique = true)
-	@CreationTimestamp
-	private LocalDateTime createdAt;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "service_id")
+    private List<ConsumableCost> costs;
 
-	@Column(nullable = false)
-	@UpdateTimestamp
-	private LocalDateTime updatedAt;
+    @Column(nullable = false, updatable = false, unique = true)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = true)
+    private LocalDateTime finishedAt;
 }

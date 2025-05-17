@@ -29,35 +29,42 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Consumable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
+    private Long id;
 
-	@Column(nullable = false)
-	private String name;
+    @ManyToOne
+    @JoinColumn(name = "consumable_key_id", referencedColumnName = "id")
+    private ConsumableKey consumableKey;
 
-	@Column(nullable = false)
-	private Float price;
+    @Column(nullable = false)
+    private String name;
 
-	@Column(nullable = true)
-	private String description;
+    @Column(nullable = false)
+    private Float price;
 
-	@Enumerated(EnumType.STRING)
-	private EUnit unit;
+    @Column(nullable = true)
+    private String description;
 
-	@Column(nullable = false)
-	private Float stock;
+    @Enumerated(EnumType.STRING)
+    private EUnit unit;
 
-	@ManyToOne
-	@JoinColumn(name = "business_id", referencedColumnName = "id")
-	private Business business;
+    @Column(nullable = false)
+    private Float stock;
 
-	@Column(nullable = false, updatable = false)
-	@CreationTimestamp
-	private LocalDateTime createdAt;
+    @ManyToOne
+    @JoinColumn(name = "business_id", referencedColumnName = "id")
+    private Business business;
 
-	@Column(nullable = false)
-	@UpdateTimestamp
-	private LocalDateTime updatedAt;
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = true)
+    private LocalDateTime finishedAt;
 }

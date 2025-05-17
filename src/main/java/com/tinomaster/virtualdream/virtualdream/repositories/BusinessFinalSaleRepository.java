@@ -25,6 +25,9 @@ public interface BusinessFinalSaleRepository extends JpaRepository<BusinessFinal
             nativeQuery = true)
     boolean existEmployeeByEmployeeId(@Param("employeeId") Long employeeId);
 
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM service WHERE service_id = :serviceId)", nativeQuery = true)
+    boolean existServiceByServiceId(@Param("serviceId") Long serviceId);
+
     @Query(value = "SELECT DISTINCT bfs.* " +
             "FROM business_final_sale bfs " +
             "JOIN machine m ON m.business_final_sale_id = bfs.id " +

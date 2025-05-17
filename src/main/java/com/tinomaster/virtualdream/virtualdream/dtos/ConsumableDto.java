@@ -2,6 +2,7 @@ package com.tinomaster.virtualdream.virtualdream.dtos;
 
 import java.time.LocalDateTime;
 
+import com.tinomaster.virtualdream.virtualdream.entities.ConsumableKey;
 import com.tinomaster.virtualdream.virtualdream.enums.EUnit;
 
 import lombok.AllArgsConstructor;
@@ -14,13 +15,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ConsumableDto {
-	private Long id;
-	private String name;
-	private Float price;
-	private String description;
-	private EUnit unit;
-	private Float stock;
-	private Long business;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+    private Long id;
+    private ConsumableKeyDto consumableKey;
+    private String name;
+    private Float price;
+    private String description;
+    private EUnit unit;
+    private Float stock;
+    private Long business;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime finishedAt;
 }

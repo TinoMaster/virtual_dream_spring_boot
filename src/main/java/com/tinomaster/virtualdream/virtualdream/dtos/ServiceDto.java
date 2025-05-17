@@ -13,12 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ServiceDto {
-	private Long id;
-	private String name;
-	private String description;
-	private Float price;
-	private Long business;
-	private List<ConsumableCostDto> costs;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+    private Long id;
+    private ServiceKeyDto serviceKey;
+    private String name;
+    private String description;
+    private Float price;
+    private Long business;
+    private List<ConsumableCostDto> costs;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime finishedAt;
 }
