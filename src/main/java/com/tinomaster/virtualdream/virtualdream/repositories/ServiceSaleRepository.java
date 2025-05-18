@@ -13,9 +13,12 @@ import com.tinomaster.virtualdream.virtualdream.entities.ServiceSale;
 @Repository
 public interface ServiceSaleRepository extends JpaRepository<ServiceSale, Long> {
 
-	@Query("SELECT bfs FROM ServiceSale bfs WHERE bfs.business.id = :businessId AND bfs.createdAt BETWEEN :startDate AND :endDate")
-	List<ServiceSale> findByBusinessAndDateRange(@Param("businessId") Long businessId,
-			@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query("SELECT bfs FROM ServiceSale bfs WHERE bfs.business.id = :businessId AND bfs.createdAt BETWEEN :startDate AND :endDate")
+    List<ServiceSale> findByBusinessAndDateRange(@Param("businessId") Long businessId,
+                                                 @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-	List<ServiceSale> findByBusinessFinalSaleIsNullAndCreatedAtBefore(LocalDateTime dateTime);
+    List<ServiceSale> findByBusinessFinalSaleIsNullAndCreatedAtBefore(LocalDateTime dateTime);
+
+    @Query(value = "SELECT EXISTS (SELECT 1 FROM service_sale WHERE service_id = :serviceId)", nativeQuery = true)
+    public boolean existServiceByServiceId(@Param("serviceId") Long serviceId);
 }

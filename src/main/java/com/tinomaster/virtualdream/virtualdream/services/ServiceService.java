@@ -4,16 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.tinomaster.virtualdream.virtualdream.entities.ServiceKey;
-import com.tinomaster.virtualdream.virtualdream.repositories.BusinessFinalSaleRepository;
-import com.tinomaster.virtualdream.virtualdream.repositories.ConsumableCostRepository;
-import com.tinomaster.virtualdream.virtualdream.repositories.ServiceKeyRepository;
+import com.tinomaster.virtualdream.virtualdream.repositories.*;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.ServiceDto;
 import com.tinomaster.virtualdream.virtualdream.entities.ServiceEntity;
-import com.tinomaster.virtualdream.virtualdream.repositories.ServiceRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -22,9 +19,9 @@ import lombok.AllArgsConstructor;
 public class ServiceService {
 
     private final ServiceRepository serviceRepository;
+    private final ServiceSaleRepository serviceSaleRepository;
     private final ServiceKeyRepository serviceKeyRepository;
     private final ConsumableCostRepository consumableCostRepository;
-    private final BusinessFinalSaleRepository businessFinalSaleRepository;
     private final ModelMapper mapper;
 
     public ServiceEntity findOrThrow(Long id) {
@@ -73,14 +70,16 @@ public class ServiceService {
     public void deleteService(Long id) {
         ServiceEntity service = this.findOrThrow(id);
         try {
-            List<ServiceEntity> services = serviceRepository.findAllByBusinessKeyId(service.getServiceKey().getId());
+            List<ServiceEntity> services = serviceRepository.findAllByServiceKeyId(service.getServiceKey().getId());
             int servicesSize = services.size();
 
             for (ServiceEntity s : services) {
-                boolean existServiceInCostOrBusinessSale = consumableCostRepository.existsCostByServiceId(s.getId())
-                        || businessFinalSaleRepository.existServiceByServiceId(s.getId());
+                boolean existServiceInServiceSale = serviceSaleRepository.existServiceByServiceId(s.getId());
 
-                if (!existServiceInCostOrBusinessSale) {
+                if (!existServiceInServiceSale) {
+                    if (consumableCostRepository.existsCostByServiceId(s.getId())) {
+                        deleteConsumableCosts(s.getId());
+                    }
                     serviceRepository.delete(s);
                     servicesSize--;
                 } else {
@@ -97,5 +96,10 @@ public class ServiceService {
         } catch (Exception e) {
             throw new RuntimeException("Error al eliminar el servicio con id: " + id, e);
         }
+    }
+
+    @Transactional
+    private void deleteConsumableCosts(Long serviceId) {
+        consumableCostRepository.deleteAllByServiceId(serviceId);
     }
 }

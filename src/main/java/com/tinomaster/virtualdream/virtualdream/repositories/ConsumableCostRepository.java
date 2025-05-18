@@ -1,6 +1,7 @@
 package com.tinomaster.virtualdream.virtualdream.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,8 @@ public interface ConsumableCostRepository extends JpaRepository<ConsumableCost, 
 
     @Query(value = "SELECT EXISTS (SELECT * FROM consumable_cost WHERE service_id = :serviceId)", nativeQuery = true)
     boolean existsCostByServiceId(@Param("serviceId") Long serviceId);
+
+    @Modifying
+    @Query(value = "DELETE FROM consumable_cost WHERE service_id = :serviceId", nativeQuery = true)
+    void deleteAllByServiceId(@Param("serviceId") Long serviceId);
 }
