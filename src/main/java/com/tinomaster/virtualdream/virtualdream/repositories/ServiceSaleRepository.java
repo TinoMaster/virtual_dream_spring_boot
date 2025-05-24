@@ -1,5 +1,6 @@
 package com.tinomaster.virtualdream.virtualdream.repositories;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,4 +22,15 @@ public interface ServiceSaleRepository extends JpaRepository<ServiceSale, Long> 
 
     @Query(value = "SELECT EXISTS (SELECT 1 FROM service_sale WHERE service_id = :serviceId)", nativeQuery = true)
     public boolean existServiceByServiceId(@Param("serviceId") Long serviceId);
+
+    @Query(value = "SELECT COALESCE(SUM(ss.quantity * s.price), 0) " +
+            "FROM service_sale ss " +
+            "JOIN service s ON ss.service_id = s.id " +
+            "WHERE ss.business_id = :businessId " +
+            "AND ss.business_final_sale_id IS NOT NULL " +
+            "AND ss.created_at BETWEEN :startDate AND :endDate",
+            nativeQuery = true)
+    Float getTotalServiceSales(@Param("businessId") Long businessId,
+                               @Param("startDate") LocalDateTime startDate,
+                               @Param("endDate") LocalDateTime endDate);
 }

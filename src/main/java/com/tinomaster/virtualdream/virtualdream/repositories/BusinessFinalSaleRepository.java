@@ -39,6 +39,9 @@ public interface BusinessFinalSaleRepository extends JpaRepository<BusinessFinal
             "        AND bfs2.business_id = :businessId " +
             "  )",
             nativeQuery = true)
-        //TODO: Revisar, esta funciones la cree para traer las ventas finales con todas las maquinas
     List<BusinessFinalSale> getLatestBusinessFinalSalesWithAllMachines(@Param("businessId") Long businessId);
+
+    // Query para obtener el total vendido de un negocio en un rango de fechas
+    @Query(value = "SELECT SUM(bfs.total) FROM business_final_sale bfs WHERE bfs.business_id = :businessId AND bfs.created_at BETWEEN :startDate AND :endDate", nativeQuery = true)
+    Float getTotalBusinessSales(@Param("businessId") Long businessId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
