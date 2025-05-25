@@ -41,7 +41,29 @@ public interface BusinessFinalSaleRepository extends JpaRepository<BusinessFinal
             nativeQuery = true)
     List<BusinessFinalSale> getLatestBusinessFinalSalesWithAllMachines(@Param("businessId") Long businessId);
 
-    // Query para obtener el total vendido de un negocio en un rango de fechas
+    /**
+     * Obtiene el total de ventas de un negocio en un rango de fechas especifico
+     *
+     * @param businessId ID del negocio
+     * @param startDate  Fecha de inicio
+     * @param endDate    Fecha de fin
+     * @return Total de ventas del negocio en el rango
+     */
     @Query(value = "SELECT SUM(bfs.total) FROM business_final_sale bfs WHERE bfs.business_id = :businessId AND bfs.created_at BETWEEN :startDate AND :endDate", nativeQuery = true)
     Float getTotalBusinessSales(@Param("businessId") Long businessId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    /**
+     * Obtiene el total de ventas de salarios pagados en un rango de fechas especifico
+     *
+     * @param businessId ID del negocio
+     * @param startDate  Fecha de inicio
+     * @param endDate    Fecha de fin
+     * @return Total de salarios pagados del negocio en el rango
+     */
+    @Query(value = "SELECT COALESCE(SUM(COALESCE(bfs.fixed_salary, 0) + (COALESCE(bfs.percent_salary, 0) * bfs.total)), 0) " +
+            "FROM business_final_sale bfs " +
+            "WHERE bfs.business_id = :businessId " +
+            "AND bfs.created_at BETWEEN :startDate AND :endDate",
+            nativeQuery = true)
+    Float getTotalBusinessPaidSalaries(@Param("businessId") Long businessId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }

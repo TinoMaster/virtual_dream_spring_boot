@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class HomeSalesResumeDto {
     private Float totalSales;
     private Float totalServices;
-    private Float totalCost;
+    private Float totalDebts;
     private Float totalSalaries;
 }
