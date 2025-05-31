@@ -15,36 +15,54 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 @PropertySource("classpath:email.properties")
 public class EmailConfig {
 
-	@Value("${email.username}")
-	private String email;
+    @Value("${spring.mail.host}")
+    private String host;
 
-	@Value("${email.password}")
-	private String password;
+    @Value("${spring.mail.port}")
+    private int port;
 
-	private Properties getMailProperties() {
-		Properties properties = new Properties();
+    @Value("${spring.mail.username}")
+    private String username;
 
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.starttls.enable", "true");
-		properties.put("mail.smtp.host", "smtp.gmail.com");
-		properties.put("mail.smtp.port", "587");
+    @Value("${spring.mail.password}")
+    private String password;
 
-		return properties;
-	}
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private String auth;
 
-	@Bean
-	JavaMailSender javaMailSender() {
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
+    private String starttls;
 
-		mailSender.setJavaMailProperties(getMailProperties());
-		mailSender.setUsername(email);
-		mailSender.setPassword(password);
+    @Value("${spring.mail.properties.mail.debug:false}")
+    private String debug;
 
-		return mailSender;
-	}
+    private Properties getMailProperties() {
+        Properties properties = new Properties();
 
-	@Bean
-	ResourceLoader resourceLoader() {
-		return new DefaultResourceLoader();
-	}
+        properties.put("mail.smtp.auth", auth);
+        properties.put("mail.smtp.starttls.enable", starttls);
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", String.valueOf(port));
+        properties.put("mail.debug", debug);
+
+        return properties;
+    }
+
+    @Bean
+    JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+
+        mailSender.setJavaMailProperties(getMailProperties());
+        mailSender.setHost(host);
+        mailSender.setPort(port);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
+
+        return mailSender;
+    }
+
+    @Bean
+    ResourceLoader resourceLoader() {
+        return new DefaultResourceLoader();
+    }
 }

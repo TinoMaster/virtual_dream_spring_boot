@@ -24,7 +24,7 @@ public class Business {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = true)

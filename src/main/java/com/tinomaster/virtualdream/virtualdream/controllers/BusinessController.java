@@ -36,6 +36,38 @@ public class BusinessController {
         return ResponseType.ok("successfullyRequest", businesses);
     }
 
+    @GetMapping("/superadmin/businesses/authRequests")
+    public ResponseEntity<ResponseBody<List<BusinessDto>>> getBusinessesAuthRequest() {
+        try {
+            var businessList = StreamSupport.stream(businessService.findBusinessRequests().spliterator(), false).toList();
+            List<BusinessDto> businesses = businessList.stream().map(this::businessToBusinessDto)
+                    .collect(Collectors.toList());
+            return ResponseType.ok("successfullyRequest", businesses);
+        } catch (Exception e) {
+            return ResponseType.internalServerError(e.getMessage(), null);
+        }
+    }
+
+    @PutMapping("/superadmin/businesses/{ownerId}/accept")
+    public ResponseEntity<ResponseBody<Boolean>> acceptBusinessRequest(@PathVariable Long ownerId) {
+        try {
+            businessService.acceptBusinessRequest(ownerId);
+            return ResponseType.ok("successfullyUpdated", Boolean.TRUE);
+        } catch (Exception e) {
+            return ResponseType.internalServerError(e.getMessage(), null);
+        }
+    }
+
+    @PutMapping("/superadmin/businesses/{ownerId}/reject")
+    public ResponseEntity<ResponseBody<Boolean>> rejectBusinessRequest(@PathVariable Long ownerId) {
+        try {
+            businessService.rejectBusinessRequest(ownerId);
+            return ResponseType.ok("successfullyUpdated", Boolean.TRUE);
+        } catch (Exception e) {
+            return ResponseType.internalServerError(e.getMessage(), null);
+        }
+    }
+
     @GetMapping("/owner/businesses/{id}")
     public ResponseEntity<ResponseBody<BusinessDto>> getBusinessById(@PathVariable Long id) {
         return ResponseType.ok("successfullyRequest",

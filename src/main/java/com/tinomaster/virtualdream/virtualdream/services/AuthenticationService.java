@@ -47,8 +47,8 @@ public class AuthenticationService {
     private final ModelMapper modelMapper;
 
     public LoginResponse registerAdmin(SuperAdminDto superAdminDto) {
-        User existingUser = userRepository.findSuperAdmin();
-        if (superAdminDto.getRole() != ERole.SUPERADMIN && existingUser != null) {
+        User superAdmin = userRepository.findSuperAdmin();
+        if (superAdminDto.getRole() != ERole.SUPERADMIN && superAdmin != null) {
             throw new InvalidRoleException("El rol proporcionado no es valido para registrar");
         }
 
@@ -112,12 +112,23 @@ public class AuthenticationService {
         userRepository.save(registeredUser);
 
         try {
+            // Enviar email al usuario registrado
             EmailDto emailDto = new EmailDto();
             emailDto.setDestination(registeredUser.getEmail());
-            emailDto.setSubject("¡Te damos la Bienvenida a nuestra aplicación!");
-            emailDto.setMessage("Gentil Usuario " + user.getName() + ", le informamos que ....");
+            emailDto.setSubject("¡Registro Exitoso - Esperando Aprobación!");
 
-            emailService.sendEmailAfterRegisterUser(emailDto, registeredUser);
+            emailService.sendEmailOwnerRegistrationPending(emailDto, registeredUser);
+
+            // Enviar notificación al superadmin
+            User superAdmin = userRepository.findSuperAdmin();
+            if (superAdmin != null) {
+                EmailDto adminEmailDto = new EmailDto();
+                adminEmailDto.setDestination(superAdmin.getEmail());
+                adminEmailDto.setSubject("Nuevo Usuario Registrado - Requiere Aprobación");
+
+                emailService.sendAdminNewUserNotification(adminEmailDto, registeredUser, businessDto);
+
+            }
         } catch (Exception e) {
             System.err.println("Ha ocurrido un error mientras se enviaba el correo de registro: " + e.getMessage());
         }

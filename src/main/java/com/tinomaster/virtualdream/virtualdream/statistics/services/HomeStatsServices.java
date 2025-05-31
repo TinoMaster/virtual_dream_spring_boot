@@ -21,6 +21,7 @@ public class HomeStatsServices {
 
     public HomeSalesResumeDto getHomeSalesResumeByPeriod(BusinessFinalSaleByBusinessAndDateDto requestDto) {
 
+
         try {
             LocalDateTime adjustStartDate = requestDto.getStartDate().toLocalDate().atStartOfDay();
             LocalDateTime adjustEndDate = requestDto.getEndDate().toLocalDate().atTime(LocalTime.MAX);

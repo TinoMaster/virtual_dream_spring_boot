@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.AddressDto;
+import com.tinomaster.virtualdream.virtualdream.dtos.EmailDto;
+import com.tinomaster.virtualdream.virtualdream.services.interfaces.BusinessServiceInterface;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +23,14 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class BusinessService {
+public class BusinessService implements BusinessServiceInterface {
 
     private final BusinessRepository businessRepository;
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
 
     private final AddressService addressService;
-
+    private final EmailService emailService;
     private final ModelMapper mapper;
 
     public Business findOrThrow(Long id) {
@@ -38,6 +40,61 @@ public class BusinessService {
 
     public List<Business> getBusinessesByUserId(Long userId) {
         return businessRepository.findBusinessesByOwnerId(userId);
+    }
+
+    @Override
+    public List<Business> findBusinessRequests() {
+        try {
+            return businessRepository.findBusinessRequests();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void acceptBusinessRequest(Long ownerId) {
+        try {
+            User user = userRepository.findById(ownerId).orElseThrow(
+                    () -> new RuntimeException("No se encuentra el user con el id: " + ownerId));
+            user.setActive(true);
+            userRepository.save(user);
+
+            Business business = businessRepository.findBusinessesByOwnerId(ownerId).get(0);
+
+            try {
+                EmailDto emailDto = new EmailDto();
+                emailDto.setDestination(user.getEmail());
+                emailDto.setSubject("Bienvenido a la plataforma Control");
+                emailService.sendAcceptedAuthRequest(emailDto, user, business);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void rejectBusinessRequest(Long ownerId) {
+        try {
+            User user = userRepository.findById(ownerId).orElseThrow(
+                    () -> new RuntimeException("No se encuentra el user con el id: " + ownerId));
+            Business business = businessRepository.findBusinessesByOwnerId(ownerId).get(0);
+
+            businessRepository.delete(business);
+            userRepository.delete(user);
+
+            try {
+                EmailDto emailDto = new EmailDto();
+                emailDto.setDestination(user.getEmail());
+                emailDto.setSubject("Rechazado en la plataforma Control");
+                emailService.sendRejectedAuthRequest(emailDto, user, business);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Business getBusinessById(Long businessId) {
@@ -86,7 +143,7 @@ public class BusinessService {
         Business business = businessRepository.findById(businessId)
                 .orElseThrow(() -> new RuntimeException("No se ha encontrado el negocio con id: " + businessId));
 
-        Long ownerId = mapper.map(business, BusinessDto.class).getOwner();
+        Long ownerId = business.getOwner().getId();
 
         // Obtener la lista de negocios del mismo propietario, excluyendo el negocio
         // actual
@@ -108,6 +165,9 @@ public class BusinessService {
             }
         }
 
+        // Eliminar al propietario del negocio
+        User owner = business.getOwner();
+        userRepository.delete(owner);
         businessRepository.deleteById(businessId);
     }
 }

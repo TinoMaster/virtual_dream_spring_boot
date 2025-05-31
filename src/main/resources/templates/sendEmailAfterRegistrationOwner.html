@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Exitoso - Esperando Aprobación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #3498db;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        .content p {
+            margin: 0 0 15px;
+        }
+
+        .content .highlight {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #999999;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Cabecera del correo -->
+    <div class="header">
+        <h1>¡Registro Exitoso!</h1>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <p>Hola <strong th:text="${username}">Usuario</strong>,</p>
+        <p>
+            Tu registro en <span th:text="${applicationName}">CONTROL</span> ha sido procesado correctamente.
+        </p>
+
+        <div class="highlight">
+            <p>
+                <strong>Estado de tu cuenta:</strong> En espera de aprobación administrativa
+            </p>
+        </div>
+
+        <p>
+            Para poder acceder a todas las funcionalidades de la aplicación, un administrador debe aprobar tu cuenta.
+            Este proceso puede tomar hasta 24 horas hábiles.
+        </p>
+
+        <p>
+            Una vez que tu cuenta sea aprobada, recibirás un correo electrónico de confirmación con instrucciones
+            para acceder al sistema.
+        </p>
+
+        <p>
+            Si tienes alguna pregunta o necesitas asistencia, no dudes en contactar a nuestro equipo de soporte.
+        </p>
+
+        <p>
+            ¡Gracias por elegir <span th:text="${applicationName}">CONTROL</span>!
+        </p>
+    </div>
+
+    <!-- Footer del correo -->
+    <div class="footer">
+        <p>© 2024 CONTROL. Todos los derechos reservados.</p>
+        <p>
+            Si recibiste este correo por error, por favor ignóralo o contáctanos.
+        </p>
+    </div>
+</div>
+</body>
+</html>

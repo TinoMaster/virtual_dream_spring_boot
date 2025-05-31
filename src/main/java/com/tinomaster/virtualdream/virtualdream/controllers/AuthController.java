@@ -34,7 +34,11 @@ public class AuthController {
     @PostMapping("/public/register")
     public ResponseEntity<ResponseBody<AuthOwnerRegisterResponse>> registerOwner(
             @RequestBody AuthRegisterDto authRegister) {
-        return ResponseType.ok("successfullyRegister", authService.registerOwner(authRegister));
+        try {
+            return ResponseType.ok("successfullyRegister", authService.registerOwner(authRegister));
+        } catch (Exception e) {
+            return ResponseType.badRequest(e.getMessage(), null);
+        }
     }
 
     @PostMapping("/public/register/superadmin")

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud Rechazada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+        .button {
+            display: inline-block;
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .details {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .details p {
+            margin: 5px 0;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #dc3545;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Solicitud Rechazada</h1>
+    </div>
+    <div class="content">
+        <h2>Estimado/a <span th:text="${username}">Usuario</span>,</h2>
+
+        <p>Lamentamos informarte que tu solicitud de registro en <span class="highlight" th:text="${applicationName}">CONTROL</span>
+            ha sido <span class="highlight">RECHAZADA</span>.</p>
+
+        <div class="details">
+            <h3>Detalles de la solicitud:</h3>
+            <p><strong>Nombre:</strong> <span th:text="${username}">Usuario</span></p>
+            <p><strong>Email:</strong> <span th:text="${userEmail}">usuario@ejemplo.com</span></p>
+            <p><strong>Negocio:</strong> <span th:text="${businessName}">Nombre del Negocio</span></p>
+            <p><strong>Fecha de solicitud:</strong> <span th:text="${registrationDate}">01/01/2025</span></p>
+            <p><strong>Motivo del rechazo:</strong> <span th:text="${rejectionReason}">Información proporcionada incompleta o incorrecta.</span>
+            </p>
+        </div>
+
+        <p>Las posibles razones para el rechazo pueden incluir:</p>
+
+        <ul>
+            <li>Información proporcionada incompleta o incorrecta</li>
+            <li>No cumplir con los requisitos de registro</li>
+            <li>Documentación insuficiente</li>
+            <li>El negocio no se encuentra dentro de nuestras categorías admitidas</li>
+        </ul>
+
+        <p>Si consideras que ha habido un error o deseas obtener más información sobre el motivo del rechazo, puedes
+            ponerte en contacto con nuestro equipo de soporte.</p>
+
+        <p style="text-align: center;">
+            <a class="button" href="http://localhost:4200/contact">CONTACTAR SOPORTE</a>
+        </p>
+
+        <p>También puedes intentar registrarte nuevamente corrigiendo la información proporcionada.</p>
+
+        <p>Gracias por tu interés en <span th:text="${applicationName}">CONTROL</span>.</p>
+    </div>
+    <div class="footer">
+        <p>&copy; 2025 <span th:text="${applicationName}">CONTROL</span>. Todos los derechos reservados.</p>
+        <p>Este es un correo electrónico automático, por favor no responda a este mensaje.</p>
+    </div>
+</div>
+</body>
+</html>

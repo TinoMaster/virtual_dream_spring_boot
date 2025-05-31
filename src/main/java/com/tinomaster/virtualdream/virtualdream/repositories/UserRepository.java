@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByActiveFalse();
 
     // Query para verificar si existe algun usuario que tenga el role de SUPERADMIN
-    @Query(value = "SELECT * FROM users WHERE role = 'ROLE_SUPERADMIN' LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE role = 'SUPERADMIN' LIMIT 1", nativeQuery = true)
     User findSuperAdmin();
 
     @Transactional

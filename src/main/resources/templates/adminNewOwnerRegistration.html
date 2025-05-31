@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Usuario Registrado - Requiere Aprobación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #e74c3c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        .content p {
+            margin: 0 0 15px;
+        }
+
+        .user-details {
+            background-color: #f8f9fa;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .user-details p {
+            margin: 5px 0;
+        }
+
+        .action-button {
+            display: inline-block;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .action-button:hover {
+            background-color: #c0392b;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #999999;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Cabecera del correo -->
+    <div class="header">
+        <h1>Nuevo Usuario Registrado</h1>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <p>Estimado Administrador,</p>
+        <p>
+            Un nuevo usuario se ha registrado en <span th:text="${applicationName}">CONTROL</span> y requiere tu
+            aprobación.
+        </p>
+
+        <div class="user-details">
+            <h3>Detalles del Usuario:</h3>
+            <p><strong>Nombre:</strong> <span th:text="${username}">Usuario</span></p>
+            <p><strong>Email:</strong> <span th:text="${userEmail}">email@example.com</span></p>
+            <p><strong>Negocio:</strong> <span th:text="${businessName}">Nombre del Negocio</span></p>
+            <p><strong>Fecha de Registro:</strong> <span th:text="${registrationDate}">01/01/2024</span></p>
+        </div>
+
+        <p>
+            Por favor, revisa los detalles del usuario y aprueba o rechaza la solicitud desde el panel de
+            administración.
+        </p>
+
+        <a th:href="${adminPanelLink}" class="action-button" target="_blank">Ir al Panel de Administración</a>
+
+        <p>
+            Recuerda que los usuarios no pueden acceder al sistema hasta que su cuenta sea aprobada.
+        </p>
+    </div>
+
+    <!-- Footer del correo -->
+    <div class="footer">
+        <p>© 2024 CONTROL. Todos los derechos reservados.</p>
+        <p>
+            Este es un correo automático, por favor no responda a este mensaje.
+        </p>
+    </div>
+</div>
+</body>
+</html>
