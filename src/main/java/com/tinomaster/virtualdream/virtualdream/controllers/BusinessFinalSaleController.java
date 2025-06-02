@@ -10,6 +10,7 @@ import com.tinomaster.virtualdream.virtualdream.entities.BusinessFinalSale;
 import com.tinomaster.virtualdream.virtualdream.mappers.BusinessFinalSaleMapper;
 import com.tinomaster.virtualdream.virtualdream.services.BusinessFinalSaleService;
 import com.tinomaster.virtualdream.virtualdream.utils.Log;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
+@SecurityRequirement(name = "Bearer Authentication")
 public class BusinessFinalSaleController {
 
     private final BusinessFinalSaleService businessFinalSaleService;

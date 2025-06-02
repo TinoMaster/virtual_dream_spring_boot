@@ -3,6 +3,7 @@ package com.tinomaster.virtualdream.virtualdream.controllers;
 import java.io.IOException;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.SuperAdminDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @CrossOrigin
+@Hidden
 public class AuthController {
 
     private final AuthenticationService authService;

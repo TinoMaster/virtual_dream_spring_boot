@@ -19,22 +19,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final JwtAuthFilter jwtAuthFilter;
-	private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/public/**").permitAll()
-						.requestMatchers("/api/v1/superadmin/**").hasAuthority("SUPERADMIN")
-						.requestMatchers("/api/v1/owner/**").hasAnyAuthority("SUPERADMIN", "OWNER")
-						.requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPERADMIN", "OWNER")
-						.requestMatchers("/api/v1/private/**").authenticated().anyRequest().authenticated())
-				.authenticationProvider(authenticationProvider)
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.requestMatchers(
+                                "/api/v1/public/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**").permitAll()
+                        .requestMatchers("/api/v1/superadmin/**").hasAuthority("SUPERADMIN")
+                        .requestMatchers("/api/v1/owner/**").hasAnyAuthority("SUPERADMIN", "OWNER")
+                        .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN", "SUPERADMIN", "OWNER")
+                        .requestMatchers("/api/v1/private/**").authenticated().anyRequest().authenticated())
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-		http.cors(Customizer.withDefaults());
+        http.cors(Customizer.withDefaults());
 
-		return http.build();
-	}
+        return http.build();
+    }
 }

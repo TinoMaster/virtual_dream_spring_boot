@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.tinomaster.virtualdream.virtualdream.entities.Debt;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface DebtRepository extends JpaRepository<Debt, Long> {
@@ -30,5 +31,27 @@ public interface DebtRepository extends JpaRepository<Debt, Long> {
             @Param("businessId") Long businessId,
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    /**
+     * Obtiene todas las deudas pendientes de un negocio
+     *
+     * @param businessId ID del negocio
+     * @return Todas las deudas pendientes del negocio
+     */
+    @Query(value = "SELECT d FROM Debt d " +
+            "JOIN BusinessFinalSale bfs ON d.businessFinalSale.id = bfs.id " +
+            "WHERE bfs.business.id = :businessId AND d.paid < d.total")
+    List<Debt> findPendingDebtsByBusinessId(@Param("businessId") Long businessId);
+
+    /**
+     * Obtiene todas las deudas de un negocio
+     *
+     * @param businessId ID del negocio
+     * @return Todas las deudas del negocio
+     */
+    @Query(value = "SELECT d FROM Debt d " +
+            "JOIN BusinessFinalSale bfs ON d.businessFinalSale.id = bfs.id " +
+            "WHERE bfs.business.id = :businessId")
+    List<Debt> findDebtsByBusinessId(@Param("businessId") Long businessId);
 }
 

@@ -5,6 +5,7 @@ import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseBody;
 import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualdream.services.AddressService;
 import com.tinomaster.virtualdream.virtualdream.utils.Log;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
+@SecurityRequirement(name = "Bearer Authentication")
 public class AddressController {
 
     private final AddressService addressService;

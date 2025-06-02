@@ -7,6 +7,11 @@ import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualdream.entities.User;
 import com.tinomaster.virtualdream.virtualdream.exceptions.NotFoundException;
 import com.tinomaster.virtualdream.virtualdream.services.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +24,8 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
+@SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "User")
 public class UserController {
 
     private final UserService userService;
@@ -32,13 +39,29 @@ public class UserController {
         return mapper.map(userDto, User.class);
     }
 
+
     @GetMapping("/superadmin/users")
+    @Hidden
     public ResponseEntity<ResponseBody<List<UserDto>>> getAllUsers() {
         var usersList = StreamSupport.stream(userService.getAllUsers().spliterator(), false).toList();
         List<UserDto> users = usersList.stream().map(this::userToUserDto).collect(Collectors.toList());
         return ResponseType.ok("successfullyRequest", users);
     }
 
+    @Operation(
+            description = "Exists any user",
+            summary = "This is a summary",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request"
+                    )
+            }
+    )
     @GetMapping("/public/users/exist")
     public ResponseEntity<ResponseBody<BooleanResponse>> existAnyUser() {
         boolean exist = userService.existAnyUser();
