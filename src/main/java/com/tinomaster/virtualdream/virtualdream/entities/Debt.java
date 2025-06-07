@@ -28,6 +28,14 @@ public class Debt {
     @Column(nullable = true)
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    private Employee employee;
+
+    @ManyToOne
+    @JoinColumn(name = "business_id", referencedColumnName = "id")
+    private Business business;
+
     @Column(nullable = false)
     private Float total;
 

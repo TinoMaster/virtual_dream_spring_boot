@@ -38,9 +38,7 @@ public interface DebtRepository extends JpaRepository<Debt, Long> {
      * @param businessId ID del negocio
      * @return Todas las deudas pendientes del negocio
      */
-    @Query(value = "SELECT d FROM Debt d " +
-            "JOIN BusinessFinalSale bfs ON d.businessFinalSale.id = bfs.id " +
-            "WHERE bfs.business.id = :businessId AND d.paid < d.total")
+    @Query(value = "SELECT * FROM debt WHERE business_id = :businessId AND d.paid < d.total", nativeQuery = true)
     List<Debt> findPendingDebtsByBusinessId(@Param("businessId") Long businessId);
 
     /**
@@ -49,9 +47,7 @@ public interface DebtRepository extends JpaRepository<Debt, Long> {
      * @param businessId ID del negocio
      * @return Todas las deudas del negocio
      */
-    @Query(value = "SELECT d FROM Debt d " +
-            "JOIN BusinessFinalSale bfs ON d.businessFinalSale.id = bfs.id " +
-            "WHERE bfs.business.id = :businessId")
+    @Query(value = "SELECT * FROM debt WHERE business_id = :businessId", nativeQuery = true)
     List<Debt> findDebtsByBusinessId(@Param("businessId") Long businessId);
 }
 

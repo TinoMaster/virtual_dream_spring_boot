@@ -70,7 +70,7 @@ public class EmployeeService {
     public Employee saveEmployee(EmployeeDto employeeDto) {
         ERole role = employeeDto.getUser().getRole();
 
-        if (role != ERole.EMPLOYEE && role != ERole.ADMIN && role != ERole.USER) {
+        if (role != ERole.EMPLOYEE && role != ERole.ADMIN && role != ERole.USER && role != ERole.OWNER) {
             throw new InvalidRoleException("El rol proporcionado no es válido para registrar un empleado.");
         }
 

@@ -1,7 +1,9 @@
 package com.tinomaster.virtualdream.virtualdream.services;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.DebtDto;
+import com.tinomaster.virtualdream.virtualdream.entities.Business;
 import com.tinomaster.virtualdream.virtualdream.entities.Debt;
+import com.tinomaster.virtualdream.virtualdream.entities.Employee;
 import com.tinomaster.virtualdream.virtualdream.repositories.DebtRepository;
 import com.tinomaster.virtualdream.virtualdream.services.interfaces.DebtServiceInterface;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ public class DebtService implements DebtServiceInterface {
 
     private final DebtRepository debtRepository;
     private final ModelMapper modelMapper;
+    private final EmployeeService employeeService;
 
     @Override
     public Float getTotalUnpaidDebtsByBusinessId(Long businessId) {
@@ -50,7 +53,18 @@ public class DebtService implements DebtServiceInterface {
     @Override
     public Debt createDebt(DebtDto debt) {
         try {
-            Debt newDebt = modelMapper.map(debt, Debt.class);
+            Business business = modelMapper.map(debt.getBusiness(), Business.class);
+            Employee employee = employeeService.findOrThrow(debt.getEmployee().getId());
+            Debt newDebt = Debt.builder()
+                    .business(business)
+                    .employee(employee)
+                    .total(debt.getTotal())
+                    .name(debt.getName())
+                    .description(debt.getDescription())
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .paid(debt.getPaid())
+                    .build();
             return debtRepository.save(newDebt);
         } catch (Exception e) {
             throw new RuntimeException("Error al crear la deuda", e);
@@ -64,6 +78,15 @@ public class DebtService implements DebtServiceInterface {
             return debtRepository.save(updatedDebt);
         } catch (Exception e) {
             throw new RuntimeException("Error al actualizar la deuda", e);
+        }
+    }
+
+    @Override
+    public void deleteDebt(Long id) {
+        try {
+            debtRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar la deuda con id: " + id, e);
         }
     }
 }

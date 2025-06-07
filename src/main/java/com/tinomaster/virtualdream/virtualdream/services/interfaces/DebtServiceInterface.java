@@ -16,4 +16,6 @@ public interface DebtServiceInterface {
     public Debt createDebt(DebtDto debt);
 
     public Debt updateDebt(DebtDto debt);
+
+    public void deleteDebt(Long id);
 }

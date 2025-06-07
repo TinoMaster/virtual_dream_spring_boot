@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthRegisterDto {
-	private String name;
-	private String email;
-	private String password;
-	private ERole role;
-	private BusinessDto business;
+    private String name;
+    private String email;
+    private String password;
+    private ERole role;
+    private BusinessDto business;
+    private EmployeeDto employee;
 }

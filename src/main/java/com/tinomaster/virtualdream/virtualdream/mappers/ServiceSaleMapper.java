@@ -17,43 +17,43 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ServiceSaleMapper {
 
-	private final BusinessRepository businessRepository;
+    private final BusinessRepository businessRepository;
 
-	private final Converter<Long, Business> idToBusinessConverter = new Converter<Long, Business>() {
+    private final Converter<Long, Business> idToBusinessConverter = new Converter<Long, Business>() {
 
-		@Override
-		public Business convert(MappingContext<Long, Business> context) {
-			Long businessId = context.getSource();
-			return businessId == null ? null : businessRepository.findById(businessId).orElseThrow();
-		}
-	};
+        @Override
+        public Business convert(MappingContext<Long, Business> context) {
+            Long businessId = context.getSource();
+            return businessId == null ? null : businessRepository.findById(businessId).orElseThrow();
+        }
+    };
 
-	private final Converter<Business, Long> businessToIdConverter = new Converter<Business, Long>() {
+    private final Converter<Business, Long> businessToIdConverter = new Converter<Business, Long>() {
 
-		@Override
-		public Long convert(MappingContext<Business, Long> context) {
-			return context.getSource() == null ? null : context.getSource().getId();
-		}
-	};
+        @Override
+        public Long convert(MappingContext<Business, Long> context) {
+            return context.getSource() == null ? null : context.getSource().getId();
+        }
+    };
 
-	private final Converter<BusinessFinalSale, Long> businessFinalSaleToIdConverter = new Converter<BusinessFinalSale, Long>() {
+    private final Converter<BusinessFinalSale, Long> businessFinalSaleToIdConverter = new Converter<BusinessFinalSale, Long>() {
 
-		@Override
-		public Long convert(MappingContext<BusinessFinalSale, Long> context) {
-			return context.getSource() == null ? null : context.getSource().getId();
-		}
-	};
+        @Override
+        public Long convert(MappingContext<BusinessFinalSale, Long> context) {
+            return context.getSource() == null ? null : context.getSource().getId();
+        }
+    };
 
-	public void addMappings(ModelMapper modelMapper) {
-		modelMapper.typeMap(ServiceSale.class, ServiceSaleDto.class).addMappings(mapper -> {
-			mapper.using(businessToIdConverter).map(ServiceSale::getBusiness, ServiceSaleDto::setBusiness);
-			mapper.using(businessFinalSaleToIdConverter).map(ServiceSale::getBusinessFinalSale,
-					ServiceSaleDto::setBusinessFinalSale);
-		});
+    public void addMappings(ModelMapper modelMapper) {
+        modelMapper.typeMap(ServiceSale.class, ServiceSaleDto.class).addMappings(mapper -> {
+            mapper.using(businessToIdConverter).map(ServiceSale::getBusiness, ServiceSaleDto::setBusiness);
+            mapper.using(businessFinalSaleToIdConverter).map(ServiceSale::getBusinessFinalSale,
+                    ServiceSaleDto::setBusinessFinalSale);
+        });
 
-		modelMapper.typeMap(ServiceSaleDto.class, ServiceSale.class).addMappings(mapper -> {
-			mapper.using(idToBusinessConverter).map(ServiceSaleDto::getBusiness, ServiceSale::setBusiness);
-		});
-	}
+        modelMapper.typeMap(ServiceSaleDto.class, ServiceSale.class).addMappings(mapper -> {
+            mapper.using(idToBusinessConverter).map(ServiceSaleDto::getBusiness, ServiceSale::setBusiness);
+        });
+    }
 
 }

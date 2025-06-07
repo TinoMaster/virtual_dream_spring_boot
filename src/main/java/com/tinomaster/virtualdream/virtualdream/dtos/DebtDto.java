@@ -15,6 +15,8 @@ public class DebtDto {
     private Long id;
     private String name;
     private String description;
+    private EmployeeDto employee;
+    private Long business;
     private Float total;
     private Float paid;
     private Long businessFinalSale;

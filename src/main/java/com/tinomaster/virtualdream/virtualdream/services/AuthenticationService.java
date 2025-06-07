@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.*;
+import com.tinomaster.virtualdream.virtualdream.entities.Employee;
+import com.tinomaster.virtualdream.virtualdream.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,13 +40,18 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
 
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final EmailService emailService;
+
     private final UserRepository userRepository;
     private final BusinessRepository businessRepository;
     private final AddressRepository addressRepository;
+    private final EmployeeRepository employeeRepository;
+
     private final ModelMapper modelMapper;
+
+    private final EmailService emailService;
+    private final JwtService jwtService;
+
 
     public LoginResponse registerAdmin(SuperAdminDto superAdminDto) {
         User superAdmin = userRepository.findSuperAdmin();
@@ -105,6 +112,16 @@ public class AuthenticationService {
                 .updatedAt(LocalDateTime.now())
                 .build();
         Business savedBusiness = businessRepository.save(newBusiness);
+
+        Employee employee = Employee.builder()
+                .phone(registerDto.getEmployee().getPhone())
+                .dni(registerDto.getEmployee().getDni())
+                .fixedSalary(registerDto.getEmployee().getFixedSalary())
+                .percentSalary(registerDto.getEmployee().getPercentSalary())
+                .address(savedAddress)
+                .user(registeredUser)
+                .build();
+        employeeRepository.save(employee);
 
         List<Business> businesses = new ArrayList<>();
         businesses.add(savedBusiness);

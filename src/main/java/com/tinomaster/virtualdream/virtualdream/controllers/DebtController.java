@@ -1,10 +1,13 @@
 package com.tinomaster.virtualdream.virtualdream.controllers;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.DebtDto;
+import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseBody;
+import com.tinomaster.virtualdream.virtualdream.dtos.response.ResponseType;
 import com.tinomaster.virtualdream.virtualdream.entities.Debt;
 import com.tinomaster.virtualdream.virtualdream.services.DebtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,47 +26,62 @@ public class DebtController {
     }
 
     @GetMapping("/private/debts/{businessId}")
-    public List<DebtDto> getAllDebtsByBusinessId(@PathVariable Long businessId) {
+    public ResponseEntity<ResponseBody<List<DebtDto>>> getAllDebtsByBusinessId(@PathVariable Long businessId) {
         try {
-            return debtService.getDebtsByBusinessId(businessId).stream().map(this::mapToDebtDto).toList();
+            List<DebtDto> debts = debtService.getDebtsByBusinessId(businessId).stream().map(this::mapToDebtDto).toList();
+            return ResponseType.ok("successfullyRetrieved", debts);
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener las deudas del negocio con id: " + businessId, e);
         }
     }
 
     @GetMapping("/private/pending-debts/{businessId}")
-    public List<DebtDto> getAllPendingDebtsByBusinessId(@PathVariable Long businessId) {
+    public ResponseEntity<ResponseBody<List<DebtDto>>> getAllPendingDebtsByBusinessId(@PathVariable Long businessId) {
         try {
-            return debtService.getPendingDebtsByBusinessId(businessId).stream().map(this::mapToDebtDto).toList();
+            List<DebtDto> pendingDebts = debtService.getPendingDebtsByBusinessId(businessId).stream().map(this::mapToDebtDto).toList();
+            return ResponseType.ok("successfullyRetrieved", pendingDebts);
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener las deudas pendientes del negocio con id: " + businessId, e);
         }
     }
 
     @GetMapping("/private/total-unpaid-debt/{businessId}/{startDate}/{endDate}")
-    public Float getTotalUnpaidDebtByBusinessAndDateRange(@PathVariable Long businessId, @PathVariable String startDate, @PathVariable String endDate) {
+    public ResponseEntity<ResponseBody<Float>> getTotalUnpaidDebtByBusinessAndDateRange(@PathVariable Long businessId, @PathVariable String startDate, @PathVariable String endDate) {
         try {
-            return debtService.getTotalUnpaidDebtsByBusinessId(businessId);
+            Float totalUnpaidDebt = debtService.getTotalUnpaidDebtsByBusinessId(businessId);
+            return ResponseType.ok("successfullyRetrieved", totalUnpaidDebt);
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener el total no pagado de deudas del negocio con id: " + businessId, e);
         }
     }
 
     @PostMapping("/private/debt")
-    public DebtDto createDebt(@RequestBody DebtDto debt) {
+    public ResponseEntity<ResponseBody<DebtDto>> createDebt(@RequestBody DebtDto debt) {
         try {
-            return mapToDebtDto(debtService.createDebt(debt));
+            DebtDto debtDto = mapToDebtDto(debtService.createDebt(debt));
+            return ResponseType.ok("successfullyCreated", debtDto);
         } catch (Exception e) {
             throw new RuntimeException("Error al crear la deuda", e);
         }
     }
 
     @PutMapping("/private/debt")
-    public DebtDto updateDebt(@RequestBody DebtDto debt) {
+    public ResponseEntity<ResponseBody<DebtDto>> updateDebt(@RequestBody DebtDto debt) {
         try {
-            return mapToDebtDto(debtService.updateDebt(debt));
+            DebtDto debtDto = mapToDebtDto(debtService.updateDebt(debt));
+            return ResponseType.ok("successfullyUpdated", debtDto);
         } catch (Exception e) {
             throw new RuntimeException("Error al actualizar la deuda", e);
+        }
+    }
+
+    @DeleteMapping("/private/debt/{id}")
+    public ResponseEntity<ResponseBody<Void>> deleteDebt(@PathVariable Long id) {
+        try {
+            debtService.deleteDebt(id);
+            return ResponseType.ok("successfullyDeleted", null);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar la deuda con id: " + id, e);
         }
     }
 }
