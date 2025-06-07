@@ -14,25 +14,6 @@ import java.util.List;
 public interface DebtRepository extends JpaRepository<Debt, Long> {
 
     /**
-     * Obtiene el total no pagado de deudas para un negocio en un rango de fechas específico
-     *
-     * @param businessId ID del negocio
-     * @param startDate  Fecha de inicio
-     * @param endDate    Fecha de fin
-     * @return Total no pagado (total - paid) de todas las deudas en el rango
-     */
-    @Query(value = "SELECT COALESCE(SUM(d.total - d.paid), 0) " +
-            "FROM debt d " +
-            "JOIN business_final_sale bfs ON d.business_final_sale_id = bfs.id " +
-            "WHERE bfs.business_id = :businessId " +
-            "AND bfs.created_at BETWEEN CAST(:startDate AS TIMESTAMP) AND CAST(:endDate AS TIMESTAMP)",
-            nativeQuery = true)
-    Float getTotalUnpaidDebtsByBusinessAndDateRange(
-            @Param("businessId") Long businessId,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
-
-    /**
      * Obtiene todas las deudas pendientes de un negocio
      *
      * @param businessId ID del negocio
@@ -49,5 +30,16 @@ public interface DebtRepository extends JpaRepository<Debt, Long> {
      */
     @Query(value = "SELECT * FROM debt WHERE business_id = :businessId", nativeQuery = true)
     List<Debt> findDebtsByBusinessId(@Param("businessId") Long businessId);
+
+    /**
+     * Obtiene todas las ventas en un rango de fechas para un negocio
+     *
+     * @param businessId ID del negocio
+     * @param startDate  Fecha de inicio
+     * @param endDate    Fecha de fin
+     * @return Todas las ventas del negocio en el rango
+     */
+    @Query(value = "SELECT * FROM business_final_sale WHERE business_id = :businessId AND created_at BETWEEN :startDate AND :endDate", nativeQuery = true)
+    List<Debt> findSalesByBusinessAndDateRange(@Param("businessId") Long businessId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
 

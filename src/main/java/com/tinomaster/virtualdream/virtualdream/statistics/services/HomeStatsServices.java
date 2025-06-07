@@ -51,7 +51,7 @@ public class HomeStatsServices {
     }
 
     private Float calculateTotalDebts(Long businessId, LocalDateTime startDate, LocalDateTime endDate) {
-        return debtRepository.getTotalUnpaidDebtsByBusinessAndDateRange(businessId, startDate, endDate);
+        return null;
     }
 
     private Float calculateTotalSalaries(Long businessId, LocalDateTime startDate, LocalDateTime endDate) {

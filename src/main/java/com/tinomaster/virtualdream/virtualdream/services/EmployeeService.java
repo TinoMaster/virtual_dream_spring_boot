@@ -1,5 +1,6 @@
 package com.tinomaster.virtualdream.virtualdream.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tinomaster.virtualdream.virtualdream.dtos.AddressDto;
@@ -46,8 +47,8 @@ public class EmployeeService {
         Business business = businessRepository.findById(businessId)
                 .orElseThrow(() -> new RuntimeException("No ah encontrado el negocio con id" + businessId));
 
-        List<Long> usersIds = mapper.map(business, BusinessDto.class).getUsers();
-
+        List<Long> usersIds = new ArrayList<>(mapper.map(business, BusinessDto.class).getUsers());
+        usersIds.add(business.getOwner().getId());
         return employeeRepository.findByUserIds(usersIds);
     }
 

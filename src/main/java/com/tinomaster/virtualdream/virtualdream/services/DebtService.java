@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -23,19 +24,24 @@ public class DebtService implements DebtServiceInterface {
 
     @Override
     public Float getTotalUnpaidDebtsByBusinessId(Long businessId) {
-        LocalDateTime startDate = null;
-        LocalDateTime endDate = null;
-        try {
-            return debtRepository.getTotalUnpaidDebtsByBusinessAndDateRange(businessId, startDate, endDate);
-        } catch (Exception e) {
-            return 0f;
-        }
+        return null;
     }
 
     @Override
     public List<Debt> getDebtsByBusinessId(Long businessId) {
         try {
             return debtRepository.findDebtsByBusinessId(businessId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener las deudas del negocio con id: " + businessId, e);
+        }
+    }
+
+    @Override
+    public List<Debt> getDebtsByBusinessIdAndDateRange(Long businessId, LocalDateTime startDate, LocalDateTime endDate) {
+        LocalDateTime adjustStartDate = startDate.toLocalDate().atStartOfDay();
+        LocalDateTime adjustEndDate = endDate.toLocalDate().atTime(LocalTime.MAX);
+        try {
+            return debtRepository.findSalesByBusinessAndDateRange(businessId, adjustStartDate, adjustEndDate);
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener las deudas del negocio con id: " + businessId, e);
         }

@@ -35,6 +35,18 @@ public class DebtController {
         }
     }
 
+    @GetMapping("/private/debts/{businessId}/{startDate}/{endDate}")
+    public ResponseEntity<ResponseBody<List<DebtDto>>> getDebtsByBusinessIdAndDateRange(@PathVariable Long businessId, @PathVariable String startDate, @PathVariable String endDate) {
+        try {
+            LocalDateTime adjustStartDate = LocalDateTime.parse(startDate);
+            LocalDateTime adjustEndDate = LocalDateTime.parse(endDate);
+            List<DebtDto> debts = debtService.getDebtsByBusinessIdAndDateRange(businessId, adjustStartDate, adjustEndDate).stream().map(this::mapToDebtDto).toList();
+            return ResponseType.ok("successfullyRetrieved", debts);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al obtener las deudas del negocio con id: " + businessId, e);
+        }
+    }
+
     @GetMapping("/private/pending-debts/{businessId}")
     public ResponseEntity<ResponseBody<List<DebtDto>>> getAllPendingDebtsByBusinessId(@PathVariable Long businessId) {
         try {
