@@ -87,6 +87,16 @@ public class UserController {
         return ResponseType.ok("successfullyRequest", users);
     }
 
+    @GetMapping("/public/last-logged-user/{email}")
+    public ResponseEntity<ResponseBody<String>> getLastLoginByEmail(@PathVariable String email) {
+        try {
+            String lastLogin = userService.getLastLoginByEmail(email);
+            return ResponseType.ok("successfullyRequest", lastLogin);
+        } catch (Exception e) {
+            return ResponseType.badRequest(e.getMessage(), null);
+        }
+    }
+
     @PutMapping("/superadmin/auth-requests/{id}")
     public ResponseEntity<ResponseBody<Object>> activeUser(@PathVariable Long id) {
         userService.activeUser(id);

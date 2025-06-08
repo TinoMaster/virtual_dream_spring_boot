@@ -28,4 +28,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "UPDATE users SET active = true WHERE id = :id", nativeQuery = true)
     void activeUser(@Param("id") Long id);
+
+    // Query para obtener la ultima vez que se logueo un usuario por su email puede ser null o la fecha
+    @Query(value = "SELECT last_login_at FROM users WHERE email = :email", nativeQuery = true)
+    String findLastLoginByEmail(@Param("email") String email);
 }

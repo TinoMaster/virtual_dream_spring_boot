@@ -21,6 +21,7 @@ public class UserDto {
 	private String password;
 	private ERole role;
 	private boolean active;
+	private LocalDateTime lastLoginAt;
 	private List<BusinessDto> businesses;
 	private List<BusinessDto> businessesOwned;
 	private LocalDateTime createdAt;

@@ -6,6 +6,8 @@ import com.tinomaster.virtualdream.virtualdream.entities.Business;
 import com.tinomaster.virtualdream.virtualdream.entities.User;
 import com.tinomaster.virtualdream.virtualdream.repositories.UserRepository;
 
+import com.tinomaster.virtualdream.virtualdream.services.interfaces.UserInterface;
+import com.tinomaster.virtualdream.virtualdream.utils.Log;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserInterface {
 
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
@@ -29,7 +31,7 @@ public class UserService {
     private final BusinessService businessService;
 
 
-    private User findOrThrow(final long id) {
+    public User findOrThrow(final long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User by id " + id + " not found"));
     }
 
@@ -105,5 +107,15 @@ public class UserService {
     public void updateUser(Long id, User user) {
         findOrThrow(id);
         userRepository.save(user);
+    }
+
+    @Override
+    public String getLastLoginByEmail(String email) {
+        try {
+            return userRepository.findLastLoginByEmail(email);
+        } catch (Exception e) {
+            Log.info("Error al obtener la ultima vez que se logueo un usuario: " + e.getMessage());
+            throw e;
+        }
     }
 }

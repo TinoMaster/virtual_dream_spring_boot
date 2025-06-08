@@ -47,6 +47,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean active;
 
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = false)
     @JsonManagedReference
     @ToString.Exclude

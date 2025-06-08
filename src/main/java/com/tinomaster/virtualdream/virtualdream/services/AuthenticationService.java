@@ -174,6 +174,9 @@ public class AuthenticationService {
             return LoginResponse.builder().active(false).build();
         }
 
+        user.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(user);
+
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
