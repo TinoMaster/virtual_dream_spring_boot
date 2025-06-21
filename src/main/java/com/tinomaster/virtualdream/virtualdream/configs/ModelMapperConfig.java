@@ -17,6 +17,8 @@ public class ModelMapperConfig {
     private final ConsumableMapper consumableMapper;
     private final ServiceSaleMapper serviceSaleMapper;
     private final DebtsMapper debtsMapper;
+    private final EmployeeMapper employeeMapper;
+    private final TaskMapper taskMapper;
 
     @Bean
     ModelMapper modelMapper() {
@@ -29,6 +31,8 @@ public class ModelMapperConfig {
         consumableMapper.addMappings(modelMapper);
         serviceSaleMapper.addMappings(modelMapper);
         debtsMapper.addMappings(modelMapper);
+        employeeMapper.addMappings(modelMapper);
+        taskMapper.addMappings(modelMapper);
 
         return modelMapper;
     }

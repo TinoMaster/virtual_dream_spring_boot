@@ -1,5 +1,6 @@
 package com.tinomaster.virtualdream.virtualdream.mappers;
 
+import lombok.Getter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.spi.MappingContext;
@@ -15,40 +16,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BusinessMapper {
 
-	private final UserMapper userMapper;
-	private final BusinessRepository businessRepository;
+    private final UserMapper userMapper;
+    private final BusinessRepository businessRepository;
 
-	private final Converter<Business, Long> businessToIdConverter = new Converter<Business, Long>() {
-		@Override
-		public Long convert(MappingContext<Business, Long> context) {
-			return context.getSource() == null ? null : context.getSource().getId();
-		}
-	};
+    @Getter
+    private final Converter<Business, Long> businessToIdConverter = new Converter<Business, Long>() {
+        @Override
+        public Long convert(MappingContext<Business, Long> context) {
+            return context.getSource() == null ? null : context.getSource().getId();
+        }
+    };
 
-	private final Converter<Long, Business> idToBusinessConverter = new Converter<Long, Business>() {
-		@Override
-		public Business convert(MappingContext<Long, Business> context) {
-			if (context.getSource() == null) {
-				return null;
-			}
-			return businessRepository.findById(context.getSource()).orElseThrow(
-					() -> new IllegalArgumentException("Business not found with ID: " + context.getSource()));
-		}
-	};
+    @Getter
+    private final Converter<Long, Business> idToBusinessConverter = new Converter<Long, Business>() {
+        @Override
+        public Business convert(MappingContext<Long, Business> context) {
+            if (context.getSource() == null) {
+                return null;
+            }
+            return businessRepository.findById(context.getSource()).orElseThrow(
+                    () -> new IllegalArgumentException("Business not found with ID: " + context.getSource()));
+        }
+    };
 
-	public void addMappings(ModelMapper modelMapper) {
-		modelMapper.typeMap(Business.class, BusinessDto.class).addMappings(mapper -> {
-			mapper.using(userMapper.getUserListToIdListConverter()).map(Business::getUsers, BusinessDto::setUsers);
-			mapper.using(userMapper.getUserToIdConverter()).map(Business::getOwner, BusinessDto::setOwner);
-		});
-		modelMapper.typeMap(Long.class, Business.class).setConverter(idToBusinessConverter);
-	}
-
-	public Converter<Business, Long> getBusinessToIdConverter() {
-		return businessToIdConverter;
-	}
-
-	public Converter<Long, Business> getIdToBusinessConverter() {
-		return idToBusinessConverter;
-	}
+    public void addMappings(ModelMapper modelMapper) {
+        modelMapper.typeMap(Business.class, BusinessDto.class).addMappings(mapper -> {
+            mapper.using(userMapper.getUserListToIdListConverter()).map(Business::getUsers, BusinessDto::setUsers);
+            mapper.using(userMapper.getUserToIdConverter()).map(Business::getOwner, BusinessDto::setOwner);
+        });
+        modelMapper.typeMap(Long.class, Business.class).setConverter(idToBusinessConverter);
+    }
 }

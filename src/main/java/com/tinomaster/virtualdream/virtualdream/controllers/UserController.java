@@ -82,7 +82,7 @@ public class UserController {
 
     @GetMapping("/superadmin/auth-requests")
     public ResponseEntity<ResponseBody<List<UserDto>>> getUnauthorizedRequests() {
-        var userList = StreamSupport.stream(userService.getUnauthorizedUsers().spliterator(), false).toList();
+        var userList = userService.getUnauthorizedUsers().stream().toList();
         List<UserDto> users = userList.stream().map(this::userToUserDto).collect(Collectors.toList());
         return ResponseType.ok("successfullyRequest", users);
     }
